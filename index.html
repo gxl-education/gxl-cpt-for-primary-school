@@ -379,14 +379,14 @@ function showPracFeedback(correct,par){
   if(!document.getElementById('prac-feedback-style')){
     const st=document.createElement('style');
     st.id='prac-feedback-style';
-    st.textContent='@keyframes popIn{0%{transform:translate(-50%,-50%) scale(.5);opacity:0}70%{transform:translate(-50%,-50%) scale(1.1)}100%{transform:translate(-50%,-50%) scale(1);opacity:1}}';
+    st.textContent = '@keyframes popIn{0%{opacity:0;scale:.4}70%{scale:1.15}100%{opacity:1;scale:1}}';
     document.head.appendChild(st);
   }
   const el=document.createElement('div');
   el.id='prac-feedback';
   if(correct){
-    el.style.cssText='position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);z-index:100;text-align:center;pointer-events:none';
-    el.innerHTML='<div style="font-size:4rem;animation:popIn .3s">✅</div>';
+    el.style.cssText = 'position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);z-index:100;text-align:center;pointer-events:none;animation:popIn .3s ease-out;transform-origin:center center';
+    el.innerHTML = `<div style="font-size:4rem">✅</div>`;
     feedbackTimer=setTimeout(()=>el.remove(),600);
   } else {
     el.style.cssText='position:fixed;inset:0;z-index:100;display:flex;align-items:center;justify-content:center;background:rgba(10,5,5,.7);pointer-events:none';
