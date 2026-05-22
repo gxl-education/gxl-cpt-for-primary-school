@@ -555,4 +555,164 @@ function resetAll(){
   S={};
   ['f-id','f-grade','f-sex','f-by','f-bm','f-bd'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});
 }
-  
+  function doExport(){
+  if(!S.lastRec)return;
+  const r=S.lastRec,m=S.lastM;
+  const vaqAgeStr=S.lastVAQAge?monthsToAgeStr(S.lastVAQAge):'—';
+  const vrcqAgeStr=S.lastVRCQAge?monthsToAgeStr(S.lastVRCQAge):'—';
+  let t=`视觉IVA-CPT注意力测试结果\n`;
+  t+=`学生编号：${r.id}　月龄：${r.mo}个月（${monthsToAgeStr(r.mo)}）　性别：${r.sex==='M'?'男':'女'}　年级：${'一二三四五六'[r.grade-1]}年级　范式：${PAR[r.par].name}\n`;
+  t+=`测试日期：${r.date}\n常模说明：${S.lastNormLabel||'—'}${S.lastFallback?' ⚠（已退回混合性别常模）':''}\n\n`;
+  t+=`【商数及注意力年龄】\n`;
+  t+=`VAQ（视觉注意力商）：${S.lastVAQ??'—'}　→ 注意力相当于 ${vaqAgeStr} 水平\n`;
+  t+=`VRCQ（视觉控制力商）：${S.lastVRCQ??'—'}　→ 控制力相当于 ${vrcqAgeStr} 水平\n\n`;
+  t+=`【原始指标】\n命中率（HR）：${Math.round(m.HR*1000)/10}%　漏报率：${m.omR}%\n`;
+  t+=`虚报率（FAR）：${m.comR}%\nRT均值：${m.rtM??'—'}ms　RT-SD：${m.rtSD??'—'}ms\nd′：${m.dp}　毅力：${m.persistence??'—'}\n`;
+  if(m.segs)t+=`\n分段漏报：前${m.segs[0]?.toFixed(1)}%|中${m.segs[1]?.toFixed(1)}%|后${m.segs[2]?.toFixed(1)}%\n`;
+  t+=`\n注：仅供研究参考，不作临床诊断依据。`;
+  dlText(t,`IVA-CPT_${r.id}_${r.date.replace(/\//g,'')}.txt`);
+}
+function exportAll(){
+  const recs=loadRecs();
+  if(!recs.length){alert('暂无数据');return;}
+  const hdr=['编号','月龄','年龄','性别','年级','月龄组','范式','VAQ','VRCQ','命中率HR','虚报率FAR','RT均值ms','RT标准差ms','d\'','漏报率%','虚报率%','日期'];
+  const rows=recs.map(r=>{
+    const{norm}=getNormForChild(r.mo||0,r.sex||'M');
+    const{VAQ,VRCQ}=calcQuotients({HR:r.HR,FAR:r.FAR,rtSD:r.rtSD},norm);
+    return[r.id,r.mo||'',r.mo?monthsToAgeStr(r.mo):(r.age||''),r.sex==='M'?'男':'女',r.grade,r.ag||'',r.par,VAQ??'',VRCQ??'',r.HR,r.FAR,r.rtM??'',r.rtSD??'',r.dp??'',r.omR,r.comR,r.date];
+  });
+  dlText('\ufeff'+[hdr,...rows].map(r=>r.join(',')).join('\n'),`IVA-CPT_全部数据_${new Date().toLocaleDateString('zh-CN').replace(/\//g,'')}.csv`);
+}
+function importCSV(inp){
+  const file=inp.files[0];if(!file)return;
+  const reader=new FileReader();
+  reader.onload=e=>{
+    const lines=e.target.result.split('\n').slice(1).filter(l=>l.trim());
+    const existing=loadRecs();
+    const keys=new Set(existing.map(r=>r.id+'_'+r.date));
+    const merged=[...existing];let added=0;
+    lines.forEach(line=>{
+      const c=line.split(',');if(c.length<10)return;
+      const rec={id:c[0],mo:+c[1]||0,age:c[2],sex:c[3]==='男'?'M':'F',grade:+c[4],ag:c[5]||'',par:c[6]||'x',HR:+c[9]||0,FAR:+c[10]||0,rtM:c[11]?+c[11]:null,rtSD:c[12]?+c[12]:null,dp:+c[13]||0,omR:+c[14]||0,comR:+c[15]||0,date:(c[16]||'').trim(),ts:Date.now()+added};
+      if(!keys.has(rec.id+'_'+rec.date)){merged.push(rec);added++;}
+    });
+    lsSet(SK,JSON.stringify(merged));recomputeNorm(merged);
+    alert(`导入完成，新增${added}条记录。`);renderAdmin();
+  };
+  reader.readAsText(file,'utf-8');
+}
+function clearAll(){if(!confirm('确认清空所有数据？此操作不可撤销。'))return;lsDel(SK);lsDel(NK);renderAdmin();}
+function deleteRec(ts){
+  if(!confirm('确认删除这条记录？'))return;
+  const recs=loadRecs().filter(r=>r.ts!==ts);
+  lsSet(SK,JSON.stringify(recs));recomputeNorm(recs);renderAdmin();
+}
+function dlText(text,fname){
+  const isSafari=/^((?!chrome|android).)*safari/i.test(navigator.userAgent);
+  const isFile=location.protocol==='file:';
+  if(!isSafari&&!isFile){
+    try{
+      const blob=new Blob([text],{type:'text/plain;charset=utf-8'});
+      const url=URL.createObjectURL(blob);
+      const a=document.createElement('a');
+      a.href=url;a.download=fname;document.body.appendChild(a);a.click();document.body.removeChild(a);
+      setTimeout(()=>URL.revokeObjectURL(url),1000);return;
+    }catch(e){}
+  }
+  const ov=document.createElement('div');
+  ov.style.cssText='position:fixed;inset:0;background:rgba(0,0,0,.75);z-index:9999;display:flex;align-items:center;justify-content:center;padding:20px';
+  const box=document.createElement('div');
+  box.style.cssText='background:#0f2540;border:1px solid #7ec8e3;border-radius:14px;padding:22px;width:100%;max-width:580px';
+  box.innerHTML=`<p style="color:#7ec8e3;font-weight:800;margin-bottom:4px">📋 ${fname}</p><p style="color:rgba(255,255,255,.45);font-size:.78rem;margin-bottom:12px">请点击「复制全部」后粘贴保存。</p>`;
+  const ta=document.createElement('textarea');
+  ta.value=text;ta.readOnly=true;
+  ta.style.cssText='width:100%;height:180px;background:#0d1b2a;color:#fff;border:1px solid rgba(255,255,255,.2);border-radius:8px;padding:10px;font-size:11px;font-family:monospace;resize:none;display:block';
+  const br=document.createElement('div');br.style.cssText='display:flex;gap:10px;margin-top:12px';
+  const cb=document.createElement('button');cb.textContent='📋 复制全部';cb.className='btn btn-y';cb.style.flex='1';
+  cb.onclick=()=>{navigator.clipboard.writeText(text).then(()=>{cb.textContent='✅ 已复制！';setTimeout(()=>{cb.textContent='📋 复制全部';},2000);}).catch(()=>{ta.select();document.execCommand('copy');cb.textContent='✅ 已复制！';});};
+  const cl=document.createElement('button');cl.textContent='关闭';cl.className='btn btn-s';cl.onclick=()=>document.body.removeChild(ov);
+  br.appendChild(cb);br.appendChild(cl);box.appendChild(ta);box.appendChild(br);ov.appendChild(box);document.body.appendChild(ov);ta.select();
+}
+function renderAdmin(){
+  const recs=loadRecs(),cache=loadNorm();
+  const groups=[...new Set(recs.map(r=>r.ag||monthAgeGroup(r.mo||0)))].sort();
+  let html=`<p style="color:rgba(255,255,255,.38);font-size:.78rem;margin-bottom:12px">共<strong style="color:#7ec8e3">${recs.length}</strong>条记录 · 每6个月龄组×性别 ≥${MIN_N}人建立常模 · ≥${MAX_N}人冻结</p>`;
+  groups.forEach(g=>{
+    ['M','F','all'].forEach(sex=>{
+      const key=`${g}_${sex}`;
+      const norm=cache[key];
+      const n=sex==='all'?recs.filter(r=>(r.ag||monthAgeGroup(r.mo||0))===g).length:recs.filter(r=>(r.ag||monthAgeGroup(r.mo||0))===g&&r.sex===sex).length;
+      if(n===0)return;
+      const label=sex==='M'?'男':sex==='F'?'女':'混合';
+      const frozen=norm?._frozen;
+      html+=`<div style="margin-bottom:12px"><div style="display:flex;align-items:center;gap:8px;margin-bottom:5px">
+        <span style="font-size:.78rem;font-weight:700;color:#7ec8e3">${g} ${label}</span>
+        <span style="font-size:.72rem;color:rgba(255,255,255,.32)">${n}人</span>
+        ${frozen?'<span class="tag tag-o">✅ 已冻结</span>':''}</div>`;
+      if(!norm&&n<MIN_N){
+        const pct=Math.min(100,n/MIN_N*100);
+        html+=`<div style="height:3px;border-radius:2px;background:rgba(255,255,255,.07);margin-bottom:3px"><div style="height:100%;width:${pct}%;border-radius:2px;background:linear-gradient(90deg,#1a6b9a,#7ec8e3)"></div></div><div style="font-size:.72rem;color:rgba(255,255,255,.28)">${n}/${MIN_N}人，积累中</div>`;
+      } else if(norm){
+        html+=`<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:6px">`;
+        [{k:'HR',l:'命中率'},{k:'FAR',l:'虚报率'},{k:'rtSD',l:'RT-SD'}].forEach(({k,l})=>{
+          const e=norm[k];
+          html+=e?`<div class="nb"><div class="nbl">${l}</div><div class="nbv">${Math.round(e.mean*1000)/1000}</div><div class="nbs">±${Math.round(e.sd*1000)/1000}·n=${e.n}</div></div>`:`<div class="nb"><div class="nbl">${l}</div><div style="color:rgba(255,255,255,.25);font-size:.7rem">不足</div></div>`;
+        });
+        html+=`</div>`;
+      }
+      html+=`</div>`;
+    });
+  });
+  document.getElementById('norm-area').innerHTML=html||'<p style="color:rgba(255,255,255,.3);font-size:.8rem">暂无数据</p>';
+  document.getElementById('rec-body').innerHTML=[...recs].reverse().map(r=>{
+    const{norm}=getNormForChild(r.mo||0,r.sex||'M');
+    const{VAQ,VRCQ}=calcQuotients({HR:r.HR,FAR:r.FAR,rtSD:r.rtSD},norm);
+    const vaqF=flagQuotient(VAQ),vrcqF=flagQuotient(VRCQ);
+    const anyF=vaqF!=='ok'||vrcqF!=='ok';
+    const tag=anyF?`<span class="tag tag-f">⚠ 待补充</span>`:norm?`<span class="tag tag-o">✅ 正常</span>`:`<span class="tag tag-n">积累中</span>`;
+    const qCol=q=>q===null?'#7ec8e3':flagQuotient(q)==='ok'?'#06d6a0':'#ffd166';
+    const ageStr=r.mo?monthsToAgeStr(r.mo):(r.age?r.age+'岁':'—');
+    return`<tr>
+      <td>${r.id}</td><td>${ageStr}</td><td>${r.sex==='M'?'男':'女'}</td><td>${'一二三四五六'[r.grade-1]}年级</td>
+      <td>${PAR[r.par]?.name||r.par}</td>
+      <td style="font-weight:800;color:${qCol(VAQ)}">${VAQ??'—'}</td>
+      <td style="font-weight:800;color:${qCol(VRCQ)}">${VRCQ??'—'}</td>
+      <td>${Math.round((r.HR??0)*1000)/10}%</td>
+      <td>${r.omR}</td><td>${r.comR}</td><td>${tag}</td><td>${r.date}</td>
+      <td><button onclick="deleteRec(${r.ts})" style="background:rgba(224,95,95,.15);border:1px solid rgba(224,95,95,.3);color:#e05f5f;border-radius:6px;padding:3px 10px;cursor:pointer;font-size:.72rem;font-family:inherit">删除</button></td>
+    </tr>`;
+  }).join('');
+}
+const ADMIN_PWD='cpt2024';
+function adminLogin(){
+  const ov=document.createElement('div');
+  ov.style.cssText='position:fixed;inset:0;background:rgba(0,0,0,.75);z-index:9999;display:flex;align-items:center;justify-content:center;padding:20px';
+  const box=document.createElement('div');
+  box.style.cssText='background:#0f2540;border:1px solid #7ec8e3;border-radius:16px;padding:28px;width:100%;max-width:360px;text-align:center';
+  box.innerHTML=`<div style="font-size:2.5rem;margin-bottom:10px">🔐</div>
+    <h2 style="color:#7ec8e3;font-size:1.2rem;margin-bottom:18px">请输入管理员密码</h2>
+    <input id="admin-pwd-input" type="password" placeholder="密码"
+      style="width:100%;padding:11px 14px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.25);border-radius:10px;color:#fff;font-size:1rem;outline:none;text-align:center;letter-spacing:4px;margin-bottom:16px">
+    <div style="display:flex;gap:10px;justify-content:center">
+      <button class="btn btn-s" style="flex:1" id="admin-cancel-btn">取消</button>
+      <button class="btn btn-y" style="flex:1" id="admin-ok-btn">确认</button>
+    </div>
+    <p id="admin-err" style="color:#e05f5f;font-size:.8rem;margin-top:10px;display:none">密码错误，请重试</p>`;
+  ov.appendChild(box);document.body.appendChild(ov);
+  const input=document.getElementById('admin-pwd-input');
+  const errEl=document.getElementById('admin-err');
+  input.focus();
+  function tryLogin(){
+    if(input.value===ADMIN_PWD){document.body.removeChild(ov);go('admin-screen');}
+    else{errEl.style.display='block';input.value='';input.focus();}
+  }
+  document.getElementById('admin-ok-btn').onclick=tryLogin;
+  document.getElementById('admin-cancel-btn').onclick=()=>document.body.removeChild(ov);
+  input.addEventListener('keydown',e=>{if(e.key==='Enter')tryLogin();});
+}
+function go(id){document.querySelectorAll('.screen').forEach(s=>{s.classList.toggle('active',s.id===id);});if(id==='admin-screen')renderAdmin();}
+function switchTab(id,btn){['t-norm','t-records','t-export'].forEach(t=>{document.getElementById(t).classList.toggle('hidden',t!==id);});document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));btn.classList.add('active');}
+(function(){const bg=document.getElementById('bg');for(let i=0;i<50;i++){const s=document.createElement('div');s.className='star';const sz=1+Math.random()*2;s.style.cssText=`width:${sz}px;height:${sz}px;left:${Math.random()*100}%;top:${Math.random()*100}%;animation-duration:${2+Math.random()*4}s;animation-delay:${Math.random()*5}s`;bg.appendChild(s);}})();
+</script>
+</body>
+</html>
