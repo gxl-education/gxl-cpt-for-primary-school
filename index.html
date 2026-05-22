@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>注意力闯关游戏</title>
+<title>儿童持续注意力测试 CPT</title>
 <style>
 * { margin:0; padding:0; box-sizing:border-box; }
 body { font-family:'Segoe UI',Arial,sans-serif; background:#0d1b2a; color:#fff; min-height:100vh; overflow:hidden; user-select:none; }
@@ -70,8 +70,8 @@ h2 { font-size:1.6rem; font-weight:800; color:#7ec8e3; margin-bottom:14px; }
 <div class="screen active" id="welcome-screen">
   <div class="card" style="text-align:center">
     <div style="font-size:4rem;margin-bottom:8px">🎯</div>
-    <h1>寻找目标大闯关</h1>
-    <p class="sub" style="margin-bottom:26px">注意力闯关游戏</p>
+    <h1>注意力小测试</h1>
+    <p class="sub" style="margin-bottom:26px">儿童持续注意力测试（CPT）</p>
     <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap">
       <button class="btn btn-y" onclick="go('info-screen')">▶ 开始测试</button>
       <button class="btn btn-s" onclick="adminLogin()">🔒 管理员</button>
@@ -82,15 +82,34 @@ h2 { font-size:1.6rem; font-weight:800; color:#7ec8e3; margin-bottom:14px; }
 <div class="screen" id="info-screen">
   <div class="card">
     <h2>👋 告诉我们你是谁</h2>
-    <div class="field"><label>学生编号（由老师告知）</label><input id="f-id" type="text" placeholder="例：1-03-12" maxlength="20"></div>
+    <div class="field"><label>学生编号（由老师告知）</label>
+      <input id="f-id" type="text" placeholder="例：1-03-12" maxlength="20"></div>
     <div class="field"><label>年级</label>
-      <select id="f-grade" onchange="autoAge()">
+      <select id="f-grade">
         <option value="">请选择</option>
         <option value="1">一年级</option><option value="2">二年级</option>
         <option value="3">三年级</option><option value="4">四年级</option>
         <option value="5">五年级</option><option value="6">六年级</option>
       </select></div>
-    <div class="field"><label>年龄（岁）</label><input id="f-age" type="number" min="6" max="14" placeholder="例：8"></div>
+    <div class="field"><label>性别</label>
+      <select id="f-sex">
+        <option value="">请选择</option>
+        <option value="M">男</option>
+        <option value="F">女</option>
+      </select></div>
+    <div class="field"><label>出生日期</label>
+      <div style="display:flex;gap:8px">
+        <select id="f-by" style="flex:2"><option value="">年</option></select>
+        <select id="f-bm" style="flex:1">
+          <option value="">月</option>
+          <option value="1">1月</option><option value="2">2月</option><option value="3">3月</option>
+          <option value="4">4月</option><option value="5">5月</option><option value="6">6月</option>
+          <option value="7">7月</option><option value="8">8月</option><option value="9">9月</option>
+          <option value="10">10月</option><option value="11">11月</option><option value="12">12月</option>
+        </select>
+        <select id="f-bd" style="flex:1"><option value="">日</option></select>
+      </div>
+    </div>
     <div class="btn-row">
       <button class="btn btn-s" onclick="go('welcome-screen')">← 返回</button>
       <button class="btn btn-y" onclick="toInstructions()">下一步 →</button>
@@ -134,7 +153,7 @@ h2 { font-size:1.6rem; font-weight:800; color:#7ec8e3; margin-bottom:14px; }
   </div>
 </div>
 <div class="screen" id="admin-screen">
-  <div class="card" style="max-width:880px;padding:26px 32px">
+  <div class="card" style="max-width:920px;padding:26px 32px">
     <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px">
       <h2 style="margin-bottom:0">📊 数据管理</h2>
       <button class="btn btn-s" style="padding:6px 14px;font-size:.82rem" onclick="go('welcome-screen')">← 返回</button>
@@ -148,7 +167,11 @@ h2 { font-size:1.6rem; font-weight:800; color:#7ec8e3; margin-bottom:14px; }
     <div id="t-records" class="hidden">
       <div class="scroll">
         <table class="tbl">
-          <thead><tr><th>编号</th><th>年龄</th><th>年级</th><th>范式</th><th>VAQ</th><th>VRCQ</th><th>命中率</th><th>漏报%</th><th>虚报%</th><th>状态</th><th>日期</th><th>操作</th></tr></thead>
+          <thead><tr>
+            <th>编号</th><th>年龄</th><th>性别</th><th>年级</th><th>范式</th>
+            <th>VAQ</th><th>VRCQ</th><th>命中率</th>
+            <th>漏报%</th><th>虚报%</th><th>状态</th><th>日期</th><th>操作</th>
+          </tr></thead>
           <tbody id="rec-body"></tbody>
         </table>
       </div>
@@ -167,20 +190,30 @@ h2 { font-size:1.6rem; font-weight:800; color:#7ec8e3; margin-bottom:14px; }
 </div>
 <script>
 'use strict';
-const MIN_N=30,MAX_N=1000,SK='cpt_recs_v3',NK='cpt_norm_v3';
+const MIN_N=30,MAX_N=1000,SK='cpt_recs_v4',NK='cpt_norm_v4';
 const PAR={
-  picture:{name:'图案版',target:'🐱',distractors:['🐶','🐰','🐻','🦊','🐸','🐼','🐨'],totalN:200,pracN:24,tRatio:0.40,isi:1500,stimMs:200},
-  x:{name:'X版',target:'X',distractors:['A','B','C','D','E','F','G','H','K','L','M','N','P','Q','R','S','T'],totalN:300,pracN:30,tRatio:0.25,isiList:[500,1000,1500],stimMs:150},
-  ax:{name:'AX版',target:'X',cue:'A',letters:['A','B','C','D','E','F','G','H','K','L','M','N','P','Q','R','S','T','X'],totalN:300,pracN:30,tRatio:0.25,isiList:[500,1000,1500],stimMs:150}
+  picture:{name:'图案版',target:'🐱',distractors:['🐶','🐰','🐻','🦊','🐸','🐼','🐨'],totalN:200,pracN:24,tRatio:0.40,isi:1500,pracIsi:2500,stimMs:200},
+  x:{name:'X版',target:'X',distractors:['A','B','C','D','E','F','G','H','K','L','M','N','P','Q','R','S','T'],totalN:300,pracN:30,tRatio:0.25,isiList:[500,1000,1500],pracIsiList:[1500,2000,2500],stimMs:150},
+  ax:{name:'AX版',target:'X',cue:'A',letters:['A','B','C','D','E','F','G','H','K','L','M','N','P','Q','R','S','T','X'],totalN:300,pracN:30,tRatio:0.25,isiList:[500,1000,1500],pracIsiList:[1500,2000,2500],stimMs:150}
 };
 function gradeToParadigm(g){return g<=2?'picture':g<=4?'x':'ax';}
-function ageGroup(a){return a<=7?'6-7':a<=9?'8-9':a<=11?'10-11':'12+';}
+
+function calcMonthAge(by,bm,bd){
+  const now=new Date(),birth=new Date(by,bm-1,bd);
+  let mo=(now.getFullYear()-birth.getFullYear())*12+(now.getMonth()-birth.getMonth());
+  if(now.getDate()<birth.getDate())mo--;
+  return Math.max(0,mo);
+}
+function monthAgeGroup(mo){const base=Math.floor(mo/6)*6;return `${base}-${base+5}m`;}
+function monthsToAgeStr(mo){const y=Math.floor(mo/12),m=mo%12;return m>0?`${y}岁${m}个月`:`${y}岁`;}
+
 function lsGet(k){try{return localStorage.getItem(k);}catch(e){return null;}}
 function lsSet(k,v){try{localStorage.setItem(k,v);}catch(e){}}
 function lsDel(k){try{localStorage.removeItem(k);}catch(e){}}
 function loadRecs(){try{return JSON.parse(lsGet(SK)||'[]');}catch(e){return[];}}
 function saveRec(r){const a=loadRecs();a.push(r);lsSet(SK,JSON.stringify(a));recomputeNorm(a);}
 function loadNorm(){try{return JSON.parse(lsGet(NK)||'{}');}catch(e){return{};}}
+
 const MK_NORM=['HR','rtSD','FAR'];
 function calcNorm(sub){
   if(sub.length<MIN_N)return null;
@@ -196,15 +229,52 @@ function calcNorm(sub){
 }
 function recomputeNorm(recs){
   const cache=loadNorm();
-  ['6-7','8-9','10-11','12+'].forEach(g=>{
-    if(cache[g]?._frozen)return;
-    const sub=recs.filter(r=>r.ag===g);
-    const n=calcNorm(sub);
-    if(n){n._frozen=sub.length>=MAX_N;n._n=sub.length;cache[g]=n;}
+  const groups=[...new Set(recs.map(r=>monthAgeGroup(r.mo||0)))];
+  groups.forEach(g=>{
+    ['M','F','all'].forEach(sex=>{
+      const key=`${g}_${sex}`;
+      if(cache[key]?._frozen)return;
+      const sub=sex==='all'?recs.filter(r=>monthAgeGroup(r.mo||0)===g):recs.filter(r=>monthAgeGroup(r.mo||0)===g&&r.sex===sex);
+      const n=calcNorm(sub);
+      if(n){n._frozen=sub.length>=MAX_N;n._n=sub.length;cache[key]=n;}
+    });
   });
   lsSet(NK,JSON.stringify(cache));
 }
-function getNorm(ag){const c=loadNorm();return c[ag]||calcNorm(loadRecs())||null;}
+function getNormForChild(mo,sex){
+  const cache=loadNorm();
+  const sexKey=`${monthAgeGroup(mo)}_${sex}`;
+  const allKey=`${monthAgeGroup(mo)}_all`;
+  if(cache[sexKey])return{norm:cache[sexKey],label:`${monthAgeGroup(mo)}·${sex==='M'?'男':'女'}生`,fallback:false};
+  if(cache[allKey])return{norm:cache[allKey],label:`${monthAgeGroup(mo)}·混合性别（同性别数据不足）`,fallback:true};
+  const global=calcNorm(loadRecs());
+  if(global)return{norm:global,label:'全样本（月龄分组数据不足）',fallback:true};
+  return{norm:null,label:'常模积累中',fallback:true};
+}
+function calcAttentionAge(quotient,sex){
+  if(quotient===null||!S.lastM)return null;
+  const cache=loadNorm();
+  const isVAQ=(quotient===S.lastVAQ);
+  let best=null,bestDiff=Infinity;
+  Object.keys(cache).forEach(k=>{
+    const parts=k.split('_'),s=parts[parts.length-1];
+    if(s!==sex&&s!=='all')return;
+    const norm=cache[k];
+    if(!norm||!norm.HR||!norm.rtSD||!norm.FAR)return;
+    const groupPart=k.replace(/_[MF]$|_all$/,'');
+    const match=groupPart.match(/^(\d+)-(\d+)m$/);
+    if(!match)return;
+    const moMid=(parseInt(match[1])+parseInt(match[2]))/2;
+    const zHR=norm.HR.sd?(S.lastM.HR-norm.HR.mean)/norm.HR.sd:null;
+    const zRTSD=norm.rtSD.sd?-(S.lastM.rtSD-norm.rtSD.mean)/norm.rtSD.sd:null;
+    const zFAR=norm.FAR.sd?-(S.lastM.FAR-norm.FAR.mean)/norm.FAR.sd:null;
+    if(zHR===null||zRTSD===null||zFAR===null)return;
+    const z=isVAQ?zHR*0.6+zRTSD*0.4:zFAR*0.7+zHR*0.3;
+    const diff=Math.abs(z);
+    if(diff<bestDiff){bestDiff=diff;best=moMid;}
+  });
+  return best?Math.round(best):null;
+}
 function zScore(val,ne,hb){if(!ne||ne.sd===0)return null;const z=(val-ne.mean)/ne.sd;return hb?z:-z;}
 function calcQuotients(raw,norm){
   if(!norm)return{VAQ:null,VRCQ:null};
@@ -217,6 +287,7 @@ function calcQuotients(raw,norm){
   return{VAQ:toQ(VAQ_z),VRCQ:toQ(VRCQ_z)};
 }
 function flagQuotient(q){if(q===null)return'n';if(q<80)return'high';if(q<85)return'flag';return'ok';}
+
 function buildTrials(pKey,isPrac){
   const cfg=PAR[pKey],N=isPrac?cfg.pracN:cfg.totalN,trials=[];
   if(pKey==='picture'||pKey==='x'){
@@ -224,7 +295,7 @@ function buildTrials(pKey,isPrac){
     for(let i=0;i<tN;i++)trials.push({tp:'t',s:cfg.target});
     for(let i=0;i<dN;i++)trials.push({tp:'d',s:cfg.distractors[i%cfg.distractors.length]});
     shuffle(trials);
-    const iList=cfg.isiList||[cfg.isi];
+    const iList=isPrac?(cfg.pracIsiList||[cfg.pracIsi||cfg.isi*1.8]):(cfg.isiList||[cfg.isi]);
     trials.forEach((t,i)=>{t.isi=iList[i%iList.length];});
   } else {
     const axN=Math.round(N*cfg.tRatio/2),bxN=Math.round(N*0.10),ayN=Math.round(N*0.08);
@@ -241,20 +312,36 @@ function buildTrials(pKey,isPrac){
     });
     const fill=N-trials.length;
     for(let i=0;i<fill;i++)trials.push({tp:'d',s:nonA[rnd(nonA.length)]});
-    trials.forEach((t,i)=>{t.isi=cfg.isiList[i%cfg.isiList.length];});
+    const iList=isPrac?cfg.pracIsiList:cfg.isiList;
+    trials.forEach((t,i)=>{t.isi=iList[i%iList.length];});
   }
   return trials;
 }
 function shuffle(a){for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}}
 function rnd(n){return Math.floor(Math.random()*n);}
+
 let S={},TM=null,waiting=false,onset=0,feedbackTimer=null;
-function autoAge(){const g=parseInt(document.getElementById('f-grade').value);if(g)document.getElementById('f-age').value=[0,6,7,8,9,10,11][g]||'';}
+
+(function initBirthSelects(){
+  const curY=new Date().getFullYear();
+  const byEl=document.getElementById('f-by');
+  const bdEl=document.getElementById('f-bd');
+  if(!byEl||!bdEl)return;
+  for(let y=curY-5;y>=curY-15;y--){const o=document.createElement('option');o.value=y;o.textContent=y+'年';byEl.appendChild(o);}
+  for(let d=1;d<=31;d++){const o=document.createElement('option');o.value=d;o.textContent=d+'日';bdEl.appendChild(o);}
+})();
+
 function toInstructions(){
   const id=document.getElementById('f-id').value.trim();
   const gr=document.getElementById('f-grade').value;
-  const ag=parseInt(document.getElementById('f-age').value);
-  if(!id||!gr||!ag||ag<6||ag>14){alert('请填写完整的学生编号、年级和年龄（6–14岁）');return;}
-  S={id,grade:parseInt(gr),age:ag,ag:ageGroup(ag),par:gradeToParadigm(parseInt(gr))};
+  const sex=document.getElementById('f-sex').value;
+  const by=parseInt(document.getElementById('f-by').value);
+  const bm=parseInt(document.getElementById('f-bm').value);
+  const bd=parseInt(document.getElementById('f-bd').value);
+  if(!id||!gr||!sex||!by||!bm||!bd){alert('请填写完整的学生编号、年级、性别和出生日期');return;}
+  const mo=calcMonthAge(by,bm,bd);
+  if(mo<60||mo>180){alert('出生日期有误，请检查（适用年龄：5–15岁）');return;}
+  S={id,grade:parseInt(gr),sex,birthY:by,birthM:bm,birthD:bd,mo,ag:monthAgeGroup(mo),par:gradeToParadigm(parseInt(gr))};
   renderInst(S.par);go('instruct-screen');
 }
 function renderInst(p){
@@ -318,8 +405,7 @@ function nextTrial(){
         <span style="font-size:.82rem;color:rgba(255,255,255,.38)">尽力作答，准备好就继续！</span>`;
       go('break-screen');
     } else {
-      S.done=true;
-      finishTest();
+      S.done=true;finishTest();
     }
     return;
   }
@@ -379,14 +465,14 @@ function showPracFeedback(correct,par){
   if(!document.getElementById('prac-feedback-style')){
     const st=document.createElement('style');
     st.id='prac-feedback-style';
-    st.textContent = '@keyframes popIn{0%{opacity:0;scale:.4}70%{scale:1.15}100%{opacity:1;scale:1}}';
+    st.textContent='@keyframes popIn{0%{opacity:0;scale:.4}70%{scale:1.15}100%{opacity:1;scale:1}}';
     document.head.appendChild(st);
   }
   const el=document.createElement('div');
   el.id='prac-feedback';
   if(correct){
-    el.style.cssText = 'position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);z-index:100;text-align:center;pointer-events:none;animation:popIn .3s ease-out;transform-origin:center center';
-    el.innerHTML = `<div style="font-size:4rem">✅</div>`;
+    el.style.cssText='position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);z-index:100;text-align:center;pointer-events:none;animation:popIn .3s ease-out;transform-origin:center center';
+    el.innerHTML='<div style="font-size:4rem">✅</div>';
     feedbackTimer=setTimeout(()=>el.remove(),600);
   } else {
     el.style.cssText='position:fixed;inset:0;z-index:100;display:flex;align-items:center;justify-content:center;background:rgba(10,5,5,.7);pointer-events:none';
@@ -402,11 +488,8 @@ document.addEventListener('keydown',e=>{
   if(e.code!=='Space')return;
   e.preventDefault();
   if(!waiting){
-    if(S.isPrac){
-      showPracFeedback(false,S.par);
-    } else if(!S.done&&S.idx>0){
-      logResp(null,true,performance.now()-onset);
-    }
+    if(S.isPrac){showPracFeedback(false,S.par);}
+    else if(!S.done&&S.idx>0){logResp(null,true,performance.now()-onset);}
     return;
   }
   clearTimeout(TM);waiting=false;
@@ -458,144 +541,18 @@ function computeMetrics(resps){
 }
 function finishTest(){
   const m=computeMetrics(S.resps);
-  const norm=getNorm(S.ag);
-  const rec={id:S.id,grade:S.grade,age:S.age,ag:S.ag,par:S.par,HR:m.HR,FAR:m.FAR,rtSD:m.rtSD,omR:m.omR,comR:m.comR,rtM:m.rtM,dp:m.dp,date:new Date().toLocaleDateString('zh-CN'),ts:Date.now()};
+  const{norm,label,fallback}=getNormForChild(S.mo,S.sex);
+  const rec={id:S.id,grade:S.grade,sex:S.sex,mo:S.mo,ag:S.ag,par:S.par,birthY:S.birthY,birthM:S.birthM,birthD:S.birthD,HR:m.HR,FAR:m.FAR,rtSD:m.rtSD,omR:m.omR,comR:m.comR,rtM:m.rtM,dp:m.dp,date:new Date().toLocaleDateString('zh-CN'),ts:Date.now()};
   saveRec(rec);
   const{VAQ,VRCQ}=calcQuotients(m,norm);
-  S.lastRec=rec;S.lastM=m;S.lastVAQ=VAQ;S.lastVRCQ=VRCQ;
+  S.lastM=m;S.lastVAQ=VAQ;S.lastVRCQ=VRCQ;
+  const vaqAge=calcAttentionAge(VAQ,S.sex);
+  const vrcqAge=calcAttentionAge(VRCQ,S.sex);
+  S.lastRec=rec;S.lastNormLabel=label;S.lastFallback=fallback;S.lastVAQAge=vaqAge;S.lastVRCQAge=vrcqAge;
   go('result-screen');
 }
-  const ADMIN_PWD='cpt2024';
-function adminLogin(){
-  const ov=document.createElement('div');
-  ov.style.cssText='position:fixed;inset:0;background:rgba(0,0,0,.75);z-index:9999;display:flex;align-items:center;justify-content:center;padding:20px';
-  const box=document.createElement('div');
-  box.style.cssText='background:#0f2540;border:1px solid #7ec8e3;border-radius:16px;padding:28px;width:100%;max-width:360px;text-align:center';
-  box.innerHTML=`
-    <div style="font-size:2.5rem;margin-bottom:10px">🔐</div>
-    <h2 style="color:#7ec8e3;font-size:1.2rem;margin-bottom:18px">请输入管理员密码</h2>
-    <input id="admin-pwd-input" type="password" placeholder="密码"
-      style="width:100%;padding:11px 14px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.25);border-radius:10px;color:#fff;font-size:1rem;outline:none;text-align:center;letter-spacing:4px;margin-bottom:16px">
-    <div style="display:flex;gap:10px;justify-content:center">
-      <button class="btn btn-s" style="flex:1" id="admin-cancel-btn">取消</button>
-      <button class="btn btn-y" style="flex:1" id="admin-ok-btn">确认</button>
-    </div>
-    <p id="admin-err" style="color:#e05f5f;font-size:.8rem;margin-top:10px;display:none">密码错误，请重试</p>`;
-  ov.appendChild(box);document.body.appendChild(ov);
-  const input=document.getElementById('admin-pwd-input');
-  const errEl=document.getElementById('admin-err');
-  input.focus();
-  function tryLogin(){
-    if(input.value===ADMIN_PWD){document.body.removeChild(ov);go('admin-screen');}
-    else{errEl.style.display='block';input.value='';input.focus();}
-  }
-  document.getElementById('admin-ok-btn').onclick=tryLogin;
-  document.getElementById('admin-cancel-btn').onclick=()=>document.body.removeChild(ov);
-  input.addEventListener('keydown',e=>{if(e.key==='Enter')tryLogin();});
+function resetAll(){
+  S={};
+  ['f-id','f-grade','f-sex','f-by','f-bm','f-bd'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});
 }
-function resetAll(){S={};document.getElementById('f-id').value='';document.getElementById('f-grade').value='';document.getElementById('f-age').value='';}
-function doExport(){
-  if(!S.lastRec)return;
-  const r=S.lastRec,m=S.lastM;
-  let t=`视觉IVA-CPT注意力测试结果\n学生编号：${r.id}　年龄：${r.age}岁　年级：${'一二三四五六'[r.grade-1]}年级　范式：${PAR[r.par].name}\n测试日期：${r.date}\n\n【商数指标】\nVAQ：${S.lastVAQ??'—'}　VRCQ：${S.lastVRCQ??'—'}\n\n【原始指标】\n命中率：${Math.round(m.HR*1000)/10}%　漏报率：${m.omR}%\n虚报率：${m.comR}%\nRT均值：${m.rtM??'—'}ms　RT-SD：${m.rtSD??'—'}ms\nd′：${m.dp}　毅力：${m.persistence??'—'}\n`;
-  if(m.segs)t+=`\n分段漏报：前${m.segs[0]?.toFixed(1)}%|中${m.segs[1]?.toFixed(1)}%|后${m.segs[2]?.toFixed(1)}%\n`;
-  t+=`\n注：仅供研究参考，不作临床诊断依据。`;
-  dlText(t,`IVA-CPT_${r.id}_${r.date.replace(/\//g,'')}.txt`);
-}
-function exportAll(){
-  const recs=loadRecs();
-  if(!recs.length){alert('暂无数据');return;}
-  const nc=loadNorm();
-  const hdr=['编号','年龄','年级','年龄组','范式','VAQ','VRCQ','命中率HR','虚报率FAR','RT均值ms','RT标准差ms','d\'','漏报率%','虚报率%','日期'];
-  const rows=recs.map(r=>{const nm=nc[r.ag];const{VAQ,VRCQ}=calcQuotients({HR:r.HR,FAR:r.FAR,rtSD:r.rtSD},nm);return[r.id,r.age,r.grade,r.ag,r.par,VAQ??'',VRCQ??'',r.HR,r.FAR,r.rtM??'',r.rtSD??'',r.dp??'',r.omR,r.comR,r.date];});
-  dlText('\ufeff'+[hdr,...rows].map(r=>r.join(',')).join('\n'),`IVA-CPT_全部数据_${new Date().toLocaleDateString('zh-CN').replace(/\//g,'')}.csv`);
-}
-function importCSV(inp){
-  const file=inp.files[0];if(!file)return;
-  const reader=new FileReader();
-  reader.onload=e=>{
-    const lines=e.target.result.split('\n').slice(1).filter(l=>l.trim());
-    const existing=loadRecs();
-    const keys=new Set(existing.map(r=>r.id+'_'+r.date));
-    const merged=[...existing];let added=0;
-    lines.forEach(line=>{
-      const c=line.split(',');if(c.length<10)return;
-      const rec={id:c[0],age:+c[1],grade:+c[2],ag:c[3]||ageGroup(+c[1]),par:c[4]||'x',HR:+c[7]||0,FAR:+c[8]||0,rtSD:c[9]?+c[9]:null,omR:+c[12]||0,comR:+c[13]||0,rtM:c[10]?+c[10]:null,dp:+c[11]||0,date:(c[14]||'').trim(),ts:Date.now()+added};
-      if(!keys.has(rec.id+'_'+rec.date)){merged.push(rec);added++;}
-    });
-    lsSet(SK,JSON.stringify(merged));recomputeNorm(merged);
-    alert(`导入完成，新增${added}条记录。`);renderAdmin();
-  };
-  reader.readAsText(file,'utf-8');
-}
-function clearAll(){if(!confirm('确认清空所有数据？此操作不可撤销。'))return;lsDel(SK);lsDel(NK);renderAdmin();}
-function dlText(text,fname){
-  const isSafari=/^((?!chrome|android).)*safari/i.test(navigator.userAgent);
-  const isFile=location.protocol==='file:';
-  if(!isSafari&&!isFile){
-    try{
-      const blob=new Blob([text],{type:'text/plain;charset=utf-8'});
-      const url=URL.createObjectURL(blob);
-      const a=document.createElement('a');
-      a.href=url;a.download=fname;document.body.appendChild(a);a.click();document.body.removeChild(a);
-      setTimeout(()=>URL.revokeObjectURL(url),1000);return;
-    }catch(e){}
-  }
-  const ov=document.createElement('div');
-  ov.style.cssText='position:fixed;inset:0;background:rgba(0,0,0,.75);z-index:9999;display:flex;align-items:center;justify-content:center;padding:20px';
-  const box=document.createElement('div');
-  box.style.cssText='background:#0f2540;border:1px solid #7ec8e3;border-radius:14px;padding:22px;width:100%;max-width:580px';
-  box.innerHTML=`<p style="color:#7ec8e3;font-weight:800;margin-bottom:4px">📋 ${fname}</p><p style="color:rgba(255,255,255,.45);font-size:.78rem;margin-bottom:12px">请点击「复制全部」后粘贴保存。</p>`;
-  const ta=document.createElement('textarea');
-  ta.value=text;ta.readOnly=true;
-  ta.style.cssText='width:100%;height:180px;background:#0d1b2a;color:#fff;border:1px solid rgba(255,255,255,.2);border-radius:8px;padding:10px;font-size:11px;font-family:monospace;resize:none;display:block';
-  const br=document.createElement('div');br.style.cssText='display:flex;gap:10px;margin-top:12px';
-  const cb=document.createElement('button');cb.textContent='📋 复制全部';cb.className='btn btn-y';cb.style.flex='1';
-  cb.onclick=()=>{navigator.clipboard.writeText(text).then(()=>{cb.textContent='✅ 已复制！';setTimeout(()=>{cb.textContent='📋 复制全部';},2000);}).catch(()=>{ta.select();document.execCommand('copy');cb.textContent='✅ 已复制！';});};
-  const cl=document.createElement('button');cl.textContent='关闭';cl.className='btn btn-s';cl.onclick=()=>document.body.removeChild(ov);
-  br.appendChild(cb);br.appendChild(cl);box.appendChild(ta);box.appendChild(br);ov.appendChild(box);document.body.appendChild(ov);ta.select();
-}
-function deleteRec(ts){
-  if(!confirm('确认删除这条记录？')) return;
-  const recs = loadRecs().filter(r => r.ts !== ts);
-  lsSet(SK, JSON.stringify(recs));
-  recomputeNorm(recs);
-  renderAdmin();
-}
-  function renderAdmin(){
-  const recs=loadRecs(),cache=loadNorm();
-  let html=`<p style="color:rgba(255,255,255,.38);font-size:.78rem;margin-bottom:12px">共<strong style="color:#7ec8e3">${recs.length}</strong>条记录 · ≥${MIN_N}人建立常模 · ≥${MAX_N}人冻结</p>`;
-  ['6-7','8-9','10-11','12+'].forEach(g=>{
-    const n=recs.filter(r=>r.ag===g).length,norm=cache[g],frozen=norm?._frozen;
-    html+=`<div style="margin-bottom:18px"><div style="display:flex;align-items:center;gap:8px;margin-bottom:7px"><span style="font-size:.8rem;font-weight:700;color:#7ec8e3">${g}岁</span><span style="font-size:.74rem;color:rgba(255,255,255,.32)">${n}人</span>${frozen?'<span class="tag tag-o">✅ 已冻结</span>':''}</div>`;
-    if(!norm&&n<MIN_N){const pct=Math.min(100,n/MIN_N*100);html+=`<div style="height:4px;border-radius:2px;background:rgba(255,255,255,.07);margin-bottom:4px"><div style="height:100%;width:${pct}%;border-radius:2px;background:linear-gradient(90deg,#1a6b9a,#7ec8e3)"></div></div><div style="font-size:.74rem;color:rgba(255,255,255,.28)">${n}/${MIN_N}人，积累中</div>`;}
-    else if(norm){
-      html+=`<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px">`;
-      [{k:'HR',l:'命中率均值'},{k:'FAR',l:'虚报率均值'},{k:'rtSD',l:'RT-SD均值(ms)'}].forEach(({k,l})=>{
-        const e=norm[k];
-        html+=e?`<div class="nb"><div class="nbl">${l}</div><div class="nbv">${Math.round(e.mean*1000)/1000}</div><div class="nbs">±${Math.round(e.sd*1000)/1000}·n=${e.n}</div></div>`:`<div class="nb"><div class="nbl">${l}</div><div style="color:rgba(255,255,255,.25);font-size:.72rem">不足</div></div>`;
-      });
-      html+=`</div>`;
-    }
-    html+=`</div>`;
-  });
-  document.getElementById('norm-area').innerHTML=html;
-  document.getElementById('rec-body').innerHTML=[...recs].reverse().map(r=>{
-    const nm=cache[r.ag];
-    const{VAQ,VRCQ}=calcQuotients({HR:r.HR,FAR:r.FAR,rtSD:r.rtSD},nm);
-    const vaqF=flagQuotient(VAQ),vrcqF=flagQuotient(VRCQ);
-    const anyF=vaqF!=='ok'||vrcqF!=='ok';
-    const tag=anyF?`<span class="tag tag-f">⚠ 待补充</span>`:nm?`<span class="tag tag-o">✅ 正常</span>`:`<span class="tag tag-n">积累中</span>`;
-    const qCol=q=>q===null?'#7ec8e3':flagQuotient(q)==='ok'?'#06d6a0':'#ffd166';
-    return`<tr><td>${r.id}</td><td>${r.age}</td><td>${'一二三四五六'[r.grade-1]}年级</td><td>${PAR[r.par]?.name||r.par}</td><td style="font-weight:800;color:${qCol(VAQ)}">${VAQ??'—'}</td><td style="font-weight:800;color:${qCol(VRCQ)}">${VRCQ??'—'}</td><td>${Math.round((r.HR??0)*1000)/10}%</td><td>${r.omR}</td><td>${r.comR}</td><td>${tag}</td><td>${r.date}</td>
-<td><button onclick="deleteRec(${r.ts})" style="background:rgba(224,95,95,.15);border:1px solid rgba(224,95,95,.3);color:#e05f5f;border-radius:6px;padding:3px 10px;cursor:pointer;font-size:.72rem;font-family:inherit">删除</button></td>
-</tr>`;
-  }).join('');
-}
-function go(id){document.querySelectorAll('.screen').forEach(s=>{s.classList.toggle('active',s.id===id);});if(id==='admin-screen')renderAdmin();}
-function switchTab(id,btn){['t-norm','t-records','t-export'].forEach(t=>{document.getElementById(t).classList.toggle('hidden',t!==id);});document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));btn.classList.add('active');}
-(function(){const bg=document.getElementById('bg');for(let i=0;i<50;i++){const s=document.createElement('div');s.className='star';const sz=1+Math.random()*2;s.style.cssText=`width:${sz}px;height:${sz}px;left:${Math.random()*100}%;top:${Math.random()*100}%;animation-duration:${2+Math.random()*4}s;animation-delay:${Math.random()*5}s`;bg.appendChild(s);}})();
-</script>
-</body>
-</html>
   
