@@ -6,7 +6,6 @@
 <title>儿童持续注意力测试 CPT</title>
 <style>
 * { margin:0; padding:0; box-sizing:border-box; }
-
 body {
   font-family: 'Segoe UI', Arial, sans-serif;
   background: #0d1b2a;
@@ -15,55 +14,31 @@ body {
   overflow: hidden;
   user-select: none;
 }
-
-/* ── 背景 ── */
 #bg { position:fixed; inset:0; z-index:0;
   background: linear-gradient(160deg,#0d1b2a 0%,#0f2540 60%,#0a2a1a 100%); }
 .star { position:absolute; border-radius:50%; background:#fff;
   animation: twinkle ease-in-out infinite; }
 @keyframes twinkle { 0%,100%{opacity:.1} 50%{opacity:.6} }
-
-/* ── 화면 전환 (screens) ── */
 .screen {
-  position: fixed;
-  inset: 0;
-  z-index: 10;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  padding: 24px;
-  display: none;   /* hidden by default */
+  position: fixed; inset: 0; z-index: 10;
+  flex-direction: column; align-items: center; justify-content: center;
+  padding: 24px; display: none;
 }
-.screen.active {
-  display: flex;   /* shown when active */
-}
-
-/* ── 카드 ── */
+.screen.active { display: flex; }
 .card {
   background: rgba(255,255,255,0.08);
   border: 1px solid rgba(255,255,255,0.14);
-  border-radius: 24px;
-  padding: 36px 44px;
-  max-width: 660px;
-  width: 100%;
+  border-radius: 24px; padding: 36px 44px;
+  max-width: 660px; width: 100%;
   box-shadow: 0 20px 60px rgba(0,0,0,0.5);
 }
-
 h1 { font-size:2.2rem; font-weight:900; color:#ffd166; margin-bottom:6px; }
 h2 { font-size:1.6rem; font-weight:800; color:#7ec8e3; margin-bottom:14px; }
 .sub { color:#7ec8e3; opacity:.65; font-size:.9rem; }
-
-/* ── 버튼 ── */
 .btn {
-  display: inline-block;
-  padding: 12px 30px;
-  border-radius: 50px;
-  border: none;
-  cursor: pointer;
-  font-size: 1rem;
-  font-weight: 700;
-  transition: transform .12s, box-shadow .12s;
-  font-family: inherit;
+  display: inline-block; padding: 12px 30px; border-radius: 50px;
+  border: none; cursor: pointer; font-size: 1rem; font-weight: 700;
+  transition: transform .12s, box-shadow .12s; font-family: inherit;
 }
 .btn:hover  { transform: translateY(-2px); box-shadow: 0 8px 20px rgba(0,0,0,.3); }
 .btn:active { transform: none; }
@@ -72,102 +47,60 @@ h2 { font-size:1.6rem; font-weight:800; color:#7ec8e3; margin-bottom:14px; }
 .btn-s  { background: rgba(255,255,255,.1); color:#fff; border:1px solid rgba(255,255,255,.2); }
 .btn-r  { background: rgba(224,95,95,.15); color:#e05f5f; border:1px solid rgba(224,95,95,.3); }
 .btn-row { display:flex; gap:12px; flex-wrap:wrap; margin-top:20px; }
-
-/* ── 입력 ── */
 .field { margin: 11px 0; }
 .field label { display:block; font-size:.85rem; color:#7ec8e3; font-weight:700; margin-bottom:5px; }
 .field input, .field select {
   width:100%; padding:10px 14px;
-  background: rgba(255,255,255,.08);
-  border: 1px solid rgba(255,255,255,.18);
-  border-radius: 10px;
-  color:#fff; font-family:inherit; font-size:.95rem; outline:none;
+  background: rgba(255,255,255,.08); border: 1px solid rgba(255,255,255,.18);
+  border-radius: 10px; color:#fff; font-family:inherit; font-size:.95rem; outline:none;
 }
 .field input:focus, .field select:focus { border-color:#7ec8e3; }
 .field select option { background:#0f2540; }
-
-/* ── 데모 박스 ── */
 .demo {
-  background: rgba(255,255,255,.05);
-  border: 1px solid rgba(255,255,255,.1);
-  border-radius: 14px;
-  padding: 16px 20px;
-  margin: 10px 0;
-  text-align: center;
+  background: rgba(255,255,255,.05); border: 1px solid rgba(255,255,255,.1);
+  border-radius: 14px; padding: 16px 20px; margin: 10px 0; text-align: center;
 }
 .demo-stim { font-size: 3.5rem; margin: 6px 0; line-height: 1.2; }
 .demo-desc { font-size: .82rem; color: rgba(255,255,255,.5); }
-
-/* ── 테스트 화면 ── */
 #test-screen { background: #0a0f1a; }
-
 .hud {
   position: fixed; top:0; left:0; right:0;
   display: flex; justify-content:space-between; align-items:center;
-  padding: 14px 28px; z-index: 30;
-  pointer-events: none;
+  padding: 14px 28px; z-index: 30; pointer-events: none;
 }
 .hud-txt { font-size:.75rem; color:rgba(255,255,255,.25); font-weight:700; }
 .prog-bar { width:140px; height:4px; border-radius:2px; background:rgba(255,255,255,.07); overflow:hidden; }
 .prog-fill { height:100%; border-radius:2px; background:linear-gradient(90deg,#7ec8e3,#06d6a0); transition:width .4s; }
-
 #stim-wrap {
   position: fixed; inset:0; z-index:20;
   display: flex; flex-direction:column; align-items:center; justify-content:center;
 }
-
 #fixation { font-size: 2.8rem; color: rgba(255,255,255,.3); }
-
-#stim-el {
-  font-size: 9rem;
-  font-weight: 900;
-  color: #fff;
-  line-height: 1;
-  display: none;
-}
-
+#stim-el { font-size: 9rem; font-weight: 900; color: #fff; line-height: 1; display: none; }
 #ax-cue {
-  position: fixed;
-  top: calc(50% - 130px);
-  left: 50%; transform: translateX(-50%);
+  position: fixed; top: calc(50% - 130px); left: 50%; transform: translateX(-50%);
   font-size: .82rem; font-weight:700; letter-spacing:1px;
-  color: rgba(255,255,255,.2);
-  z-index: 25;
-  display: none;
+  color: rgba(255,255,255,.2); z-index: 25; display: none;
 }
-
 .ptag {
   position: fixed; bottom:24px; left:50%; transform:translateX(-50%);
   font-size:.7rem; color:rgba(255,255,255,.18); letter-spacing:2px; z-index:25;
 }
-
-/* 플래시 피드백 */
 @keyframes fG { 0%,100%{background:#0a0f1a} 50%{background:rgba(6,214,160,.12)} }
 @keyframes fR { 0%,100%{background:#0a0f1a} 50%{background:rgba(224,95,95,.15)} }
-.fl-g { animation: fG .22s; }
-.fl-r { animation: fR .22s; }
-
-/* ── 결과 ── */
+.fl-g { animation: fG .22s; } .fl-r { animation: fR .22s; }
 .metric-grid { display:grid; grid-template-columns:1fr 1fr; gap:12px; margin:16px 0; }
-.mc {
-  background: rgba(255,255,255,.06);
-  border: 1px solid rgba(255,255,255,.1);
-  border-radius:13px; padding:15px 17px;
-}
+.mc { background: rgba(255,255,255,.06); border: 1px solid rgba(255,255,255,.1); border-radius:13px; padding:15px 17px; }
 .mc-lbl { font-size:.72rem; color:#7ec8e3; font-weight:700; margin-bottom:3px; }
 .mc-val { font-size:1.8rem; font-weight:900; }
 .mc-norm{ font-size:.7rem; color:rgba(255,255,255,.3); margin-top:3px; }
 .mc-flag{ font-size:.7rem; font-weight:700; margin-top:3px; }
-
 .badge { text-align:center; padding:15px 18px; border-radius:14px; margin-bottom:14px; font-weight:800; font-size:.95rem; }
 .b-ok   { background:rgba(6,214,160,.1);   border:1px solid rgba(6,214,160,.3);   color:#06d6a0; }
 .b-flag { background:rgba(224,95,95,.1);   border:1px solid rgba(224,95,95,.3);   color:#e05f5f; }
 .b-norm { background:rgba(255,209,102,.08);border:1px solid rgba(255,209,102,.25);color:#ffd166; }
-
 .note { background:rgba(255,255,255,.04); border-radius:9px; padding:11px 15px;
   font-size:.76rem; color:rgba(255,255,255,.38); line-height:1.7; margin-top:10px; }
-
-/* ── 관리자 ── */
 .tab-bar { display:flex; gap:7px; margin-bottom:16px; }
 .tab-btn {
   padding:6px 14px; border-radius:7px; border:none; cursor:pointer;
@@ -175,7 +108,6 @@ h2 { font-size:1.6rem; font-weight:800; color:#7ec8e3; margin-bottom:14px; }
   background:rgba(255,255,255,.07); color:rgba(255,255,255,.45); transition:all .12s;
 }
 .tab-btn.active { background:#1a6b9a; color:#fff; }
-
 .tbl { width:100%; border-collapse:collapse; font-size:.78rem; }
 .tbl th { background:rgba(255,255,255,.07); padding:8px 10px; text-align:left;
   color:#7ec8e3; font-weight:700; border-bottom:1px solid rgba(255,255,255,.09); }
@@ -184,25 +116,18 @@ h2 { font-size:1.6rem; font-weight:800; color:#7ec8e3; margin-bottom:14px; }
 .scroll { max-height:260px; overflow-y:auto; }
 .scroll::-webkit-scrollbar { width:3px; }
 .scroll::-webkit-scrollbar-thumb { background:rgba(255,255,255,.12); border-radius:2px; }
-
 .ng { display:grid; grid-template-columns:repeat(3,1fr); gap:8px; margin:8px 0; }
 .nb { background:rgba(255,255,255,.05); border-radius:9px; padding:10px; text-align:center; }
-.nbl{ font-size:.68rem; color:#7ec8e3; }
-.nbv{ font-size:1.1rem; font-weight:800; color:#ffd166; }
-.nbs{ font-size:.65rem; color:rgba(255,255,255,.3); }
-
+.nbl{ font-size:.68rem; color:#7ec8e3; } .nbv{ font-size:1.1rem; font-weight:800; color:#ffd166; } .nbs{ font-size:.65rem; color:rgba(255,255,255,.3); }
 .tag { display:inline-block; padding:2px 6px; border-radius:5px; font-size:.68rem; font-weight:700; }
 .tag-f { background:rgba(255,209,102,.18); color:#ffd166; }
 .tag-o { background:rgba(6,214,160,.13);   color:#06d6a0; }
 .tag-n { background:rgba(126,200,227,.1);  color:#7ec8e3; }
-
 .hidden { display:none !important; }
 </style>
 </head>
 <body>
 <div id="bg"></div>
-
-<!-- ══ 欢迎 ══ -->
 <div class="screen active" id="welcome-screen">
   <div class="card" style="text-align:center">
     <div style="font-size:4rem;margin-bottom:8px">🎯</div>
@@ -212,11 +137,9 @@ h2 { font-size:1.6rem; font-weight:800; color:#7ec8e3; margin-bottom:14px; }
       <button class="btn btn-y" onclick="go('info-screen')">▶ 开始测试</button>
       <button class="btn btn-s" onclick="go('admin-screen')">🔒 管理员</button>
     </div>
-    <p style="margin-top:18px;font-size:.72rem;color:rgba(255,255,255,.22)">测试时长 10–15 分钟 · 请在安静环境完成</p>
+    <p style="margin-top:18px;font-size:.72rem;color:rgba(255,255,255,.22)">测试时长 8–10 分钟 · 请在安静环境完成</p>
   </div>
 </div>
-
-<!-- ══ 信息录入 ══ -->
 <div class="screen" id="info-screen">
   <div class="card">
     <h2>👋 告诉我们你是谁</h2>
@@ -237,8 +160,6 @@ h2 { font-size:1.6rem; font-weight:800; color:#7ec8e3; margin-bottom:14px; }
     </div>
   </div>
 </div>
-
-<!-- ══ 指导语 ══ -->
 <div class="screen" id="instruct-screen">
   <div class="card">
     <h2 id="inst-h">🎮 游戏说明</h2>
@@ -249,8 +170,6 @@ h2 { font-size:1.6rem; font-weight:800; color:#7ec8e3; margin-bottom:14px; }
     </div>
   </div>
 </div>
-
-<!-- ══ 测试屏 ══ -->
 <div class="screen" id="test-screen">
   <div class="hud">
     <span class="hud-txt" id="h-phase">练习</span>
@@ -264,8 +183,6 @@ h2 { font-size:1.6rem; font-weight:800; color:#7ec8e3; margin-bottom:14px; }
   </div>
   <div class="ptag" id="ptag"></div>
 </div>
-
-<!-- ══ 休息 ══ -->
 <div class="screen" id="break-screen">
   <div class="card" style="text-align:center">
     <div style="font-size:3rem;margin-bottom:8px">☕</div>
@@ -274,8 +191,6 @@ h2 { font-size:1.6rem; font-weight:800; color:#7ec8e3; margin-bottom:14px; }
     <button class="btn btn-g" onclick="startFormal()">我准备好了，继续！</button>
   </div>
 </div>
-
-<!-- ══ 结果 ══ -->
 <div class="screen" id="result-screen">
   <div class="card" style="max-width:720px">
     <h2 style="text-align:center;margin-bottom:4px">✅ 测试完成！</h2>
@@ -289,8 +204,6 @@ h2 { font-size:1.6rem; font-weight:800; color:#7ec8e3; margin-bottom:14px; }
     </div>
   </div>
 </div>
-
-<!-- ══ 管理员 ══ -->
 <div class="screen" id="admin-screen">
   <div class="card" style="max-width:880px;padding:26px 32px">
     <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px">
@@ -322,215 +235,104 @@ h2 { font-size:1.6rem; font-weight:800; color:#7ec8e3; margin-bottom:14px; }
         <button class="btn btn-s" onclick="document.getElementById('csv-in').click()">📥 导入 CSV</button>
       </div>
       <input type="file" id="csv-in" accept=".csv" style="display:none" onchange="importCSV(this)">
-      <p style="font-size:.75rem;color:rgba(255,255,255,.3);margin-top:10px">导入后自动合并并重算常模，适合多台电脑汇总数据。</p>
-      <div style="margin-top:16px">
-        <button class="btn btn-r" onclick="clearAll()">🗑 清空所有数据</button>
-      </div>
+      <p style="font-size:.75rem;color:rgba(255,255,255,.3);margin-top:10px">导入后自动合并并重算常模。</p>
+      <div style="margin-top:16px"><button class="btn btn-r" onclick="clearAll()">🗑 清空所有数据</button></div>
     </div>
   </div>
 </div>
-
 <script>
 'use strict';
-
-// ══ 常数 ══════════════════════════════════════════════════════════
-const MIN_N = 30, MAX_N = 1000;
-const SK = 'cpt_recs_v2', NK = 'cpt_norm_v2';
-
-const PAR = {
-  picture: {
-    name:'图案版', target:'🐱',
-    distractors:['🐶','🐰','🐻','🦊','🐸','🐼','🐨'],
-    isi:1500, stimMs:200, dur:10*60*1000, tRatio:0.40
-  },
-  x: {
-    name:'X版', target:'X',
-    distractors:['A','B','C','D','E','F','G','H','K','L','M','N','P','Q','R','S','T'],
-    isiList:[500,1000,1500], stimMs:150, dur:15*60*1000, tRatio:0.25
-  },
-  ax: {
-    name:'AX版', target:'X', cue:'A',
-    letters:['A','B','C','D','E','F','G','H','K','L','M','N','P','Q','R','S','T','X'],
-    isiList:[500,1000,1500], stimMs:150, dur:15*60*1000, tRatio:0.25
-  }
+const MIN_N=30,MAX_N=1000,SK='cpt_recs_v3',NK='cpt_norm_v3';
+const PAR={
+  picture:{name:'图案版',target:'🐱',distractors:['🐶','🐰','🐻','🦊','🐸','🐼','🐨'],totalN:200,pracN:24,tRatio:0.40,isi:1500,stimMs:200},
+  x:{name:'X版',target:'X',distractors:['A','B','C','D','E','F','G','H','K','L','M','N','P','Q','R','S','T'],totalN:300,pracN:30,tRatio:0.25,isiList:[500,1000,1500],stimMs:150},
+  ax:{name:'AX版',target:'X',cue:'A',letters:['A','B','C','D','E','F','G','H','K','L','M','N','P','Q','R','S','T','X'],totalN:300,pracN:30,tRatio:0.25,isiList:[500,1000,1500],stimMs:150}
 };
-
-function gradeToParadigm(g){ return g<=2?'picture':g<=4?'x':'ax'; }
-function ageGroup(a){ return a<=7?'6-7':a<=9?'8-9':a<=11?'10-11':'12+'; }
-
-// ══ 存储层：云端API（Vercel + Supabase）══════════════════════════
-// 本地缓存，减少重复请求
-let _recsCache = null;
-let _normCache = null;
-
-async function loadRecs(){
-  if(_recsCache) return _recsCache;
-  try{
-    const r = await fetch('/api/get-records');
-    _recsCache = await r.json();
-    return _recsCache;
-  }catch(e){ return []; }
-}
-
-async function saveRec(rec){
-  try{
-    await fetch('/api/save-record',{
-      method:'POST',
-      headers:{'Content-Type':'application/json'},
-      body:JSON.stringify(rec)
-    });
-    _recsCache = null; // 清除缓存，下次重新拉取
-  }catch(e){ console.error('保存失败',e); }
-  const allRecs = await loadRecs();
-  await recomputeNorm(allRecs);
-}
-
-function loadNorm(){
-  return _normCache || {};
-}
-
-function saveNormCache(n){
-  _normCache = n;
-  // 同时存 localStorage 作为备份
-  try{ localStorage.setItem('cpt_norm_local', JSON.stringify(n)); }catch(e){}
-}
-
-// ══ 常模 ══════════════════════════════════════════════════════════
-// 存储三个基础维度的均值/SD，用于计算 VAQ / VRCQ
-// MK_NORM: HR（命中率）、rtSD（反应时标准差）、FAR（虚报率）
-const MK_NORM = ['HR','rtSD','FAR'];
-
+function gradeToParadigm(g){return g<=2?'picture':g<=4?'x':'ax';}
+function ageGroup(a){return a<=7?'6-7':a<=9?'8-9':a<=11?'10-11':'12+';}
+function lsGet(k){try{return localStorage.getItem(k);}catch(e){return null;}}
+function lsSet(k,v){try{localStorage.setItem(k,v);}catch(e){}}
+function lsDel(k){try{localStorage.removeItem(k);}catch(e){}}
+function loadRecs(){try{return JSON.parse(lsGet(SK)||'[]');}catch(e){return[];}}
+function saveRec(r){const a=loadRecs();a.push(r);lsSet(SK,JSON.stringify(a));recomputeNorm(a);}
+function loadNorm(){try{return JSON.parse(lsGet(NK)||'{}');}catch(e){return{};}}
+const MK_NORM=['HR','rtSD','FAR'];
 function calcNorm(sub){
-  if(sub.length < MIN_N) return null;
+  if(sub.length<MIN_N)return null;
   const n={};
   MK_NORM.forEach(k=>{
-    const v = sub.map(r=>r[k]).filter(x=>x!=null&&!isNaN(x));
-    if(v.length < MIN_N){ n[k]=null; return; }
-    const mean = v.reduce((a,b)=>a+b,0)/v.length;
-    const sd   = Math.sqrt(v.reduce((a,b)=>a+(b-mean)**2,0)/v.length);
-    n[k] = { mean, sd, n:v.length };
+    const v=sub.map(r=>r[k]).filter(x=>x!=null&&!isNaN(x));
+    if(v.length<MIN_N){n[k]=null;return;}
+    const mean=v.reduce((a,b)=>a+b,0)/v.length;
+    const sd=Math.sqrt(v.reduce((a,b)=>a+(b-mean)**2,0)/v.length);
+    n[k]={mean,sd,n:v.length};
   });
   return n;
 }
-
 function recomputeNorm(recs){
-  const cache = loadNorm();
+  const cache=loadNorm();
   ['6-7','8-9','10-11','12+'].forEach(g=>{
-    if(cache[g]?._frozen) return;
-    const sub = recs.filter(r=>r.ag===g);
-    const n   = calcNorm(sub);
-    if(n){ n._frozen=sub.length>=MAX_N; n._n=sub.length; cache[g]=n; }
+    if(cache[g]?._frozen)return;
+    const sub=recs.filter(r=>r.ag===g);
+    const n=calcNorm(sub);
+    if(n){n._frozen=sub.length>=MAX_N;n._n=sub.length;cache[g]=n;}
   });
-  saveNormCache(cache);
+  lsSet(NK,JSON.stringify(cache));
 }
-
-function getNorm(ag){
-  const c = loadNorm();
-  return c[ag] || calcNorm(loadRecs()) || null;
+function getNorm(ag){const c=loadNorm();return c[ag]||calcNorm(loadRecs())||null;}
+function zScore(val,ne,hb){if(!ne||ne.sd===0)return null;const z=(val-ne.mean)/ne.sd;return hb?z:-z;}
+function calcQuotients(raw,norm){
+  if(!norm)return{VAQ:null,VRCQ:null};
+  const zHR=zScore(raw.HR,norm.HR,true);
+  const zRTSD=zScore(raw.rtSD,norm.rtSD,false);
+  const zFAR=zScore(raw.FAR,norm.FAR,false);
+  const VAQ_z=(zHR!==null&&zRTSD!==null)?zHR*0.6+zRTSD*0.4:(zHR??zRTSD);
+  const VRCQ_z=(zFAR!==null&&zHR!==null)?zFAR*0.7+zHR*0.3:(zFAR??zHR);
+  const toQ=z=>z!==null?Math.round(z*15+100):null;
+  return{VAQ:toQ(VAQ_z),VRCQ:toQ(VRCQ_z)};
 }
-
-// ── IVA 风格合成商数 ─────────────────────────────────────────────
-// 输入：原始值 + 常模均值/SD；输出：标准分（均值100，SD15）
-function zScore(val, normEntry, higherBetter){
-  if(!normEntry || normEntry.sd===0) return null;
-  const z = (val - normEntry.mean) / normEntry.sd;
-  return higherBetter ? z : -z;  // 翻转使"越好=越高"统一方向
-}
-
-function calcQuotients(raw, norm){
-  if(!norm) return { VAQ:null, VRCQ:null };
-
-  const zHR   = zScore(raw.HR,   norm.HR,   true);   // 命中率高=好
-  const zRTSD = zScore(raw.rtSD, norm.rtSD,  false);  // RT-SD小=好，翻转
-  const zFAR  = zScore(raw.FAR,  norm.FAR,   false);  // 虚报率小=好，翻转
-
-  // VAQ：注意力商 = HR权重0.6 + RT稳定性权重0.4
-  const VAQ_z  = (zHR!==null && zRTSD!==null)
-    ? zHR*0.6 + zRTSD*0.4
-    : (zHR ?? zRTSD);
-
-  // VRCQ：控制力商 = 虚报抑制权重0.7 + 命中率权重0.3
-  const VRCQ_z = (zFAR!==null && zHR!==null)
-    ? zFAR*0.7 + zHR*0.3
-    : (zFAR ?? zHR);
-
-  // 转换到标准分量表（均值100，SD15）
-  const toQ = z => z!==null ? Math.round(z*15 + 100) : null;
-  return { VAQ: toQ(VAQ_z), VRCQ: toQ(VRCQ_z) };
-}
-
-// 商数判定阈值
-function flagQuotient(q){
-  if(q===null) return 'n';
-  if(q < 80)   return 'high';  // < −1.33SD：高风险
-  if(q < 85)   return 'flag';  // < −1SD：需关注
-  return 'ok';
-}
-
-// ══ 试次生成 ══════════════════════════════════════════════════════
-function buildTrials(pKey, isPrac){
-  const cfg=PAR[pKey], trials=[];
-  const dur=isPrac?60000:cfg.dur;
-
+function flagQuotient(q){if(q===null)return'n';if(q<80)return'high';if(q<85)return'flag';return'ok';}
+function buildTrials(pKey,isPrac){
+  const cfg=PAR[pKey],N=isPrac?cfg.pracN:cfg.totalN,trials=[];
   if(pKey==='picture'||pKey==='x'){
-    const avgISI=cfg.isiList?cfg.isiList.reduce((a,b)=>a+b,0)/cfg.isiList.length:cfg.isi;
-    const N=Math.floor(dur/(cfg.stimMs+avgISI));
-    const tN=Math.round(N*cfg.tRatio), dN=N-tN;
-    for(let i=0;i<tN;i++) trials.push({tp:'t',s:cfg.target});
-    for(let i=0;i<dN;i++) trials.push({tp:'d',s:cfg.distractors[i%cfg.distractors.length]});
+    const tN=Math.round(N*cfg.tRatio),dN=N-tN;
+    for(let i=0;i<tN;i++)trials.push({tp:'t',s:cfg.target});
+    for(let i=0;i<dN;i++)trials.push({tp:'d',s:cfg.distractors[i%cfg.distractors.length]});
     shuffle(trials);
     const iList=cfg.isiList||[cfg.isi];
-    const bSz=Math.ceil(trials.length/iList.length);
-    trials.forEach((t,i)=>{ t.isi=iList[Math.floor(i/bSz)%iList.length]; });
+    trials.forEach((t,i)=>{t.isi=iList[i%iList.length];});
   } else {
-    // AX
-    const avgISI=cfg.isiList.reduce((a,b)=>a+b,0)/cfg.isiList.length;
-    const N=Math.floor(dur/(cfg.stimMs+avgISI));
-    const axN=Math.round(N*cfg.tRatio/2);
-    const bxN=Math.round(N*0.15), ayN=Math.round(N*0.10);
-    const nonA=cfg.letters.filter(l=>l!=='A'&&l!=='X');
-    const nonX=cfg.letters.filter(l=>l!=='X');
+    const axN=Math.round(N*cfg.tRatio/2),bxN=Math.round(N*0.10),ayN=Math.round(N*0.08);
+    const nonA=cfg.letters.filter(l=>l!=='A'&&l!=='X'),nonX=cfg.letters.filter(l=>l!=='X');
     const pairs=[];
-    for(let i=0;i<axN;i++) pairs.push('AX');
-    for(let i=0;i<bxN;i++) pairs.push('BX');
-    for(let i=0;i<ayN;i++) pairs.push('AY');
+    for(let i=0;i<axN;i++)pairs.push('AX');
+    for(let i=0;i<bxN;i++)pairs.push('BX');
+    for(let i=0;i<ayN;i++)pairs.push('AY');
     shuffle(pairs);
     pairs.forEach(p=>{
-      if(p==='AX'){ trials.push({tp:'cue',s:'A'}); trials.push({tp:'t',s:'X'}); }
-      else if(p==='BX'){ trials.push({tp:'nc',s:nonA[rnd(nonA.length)]}); trials.push({tp:'lure',s:'X'}); }
-      else { trials.push({tp:'cue',s:'A'}); trials.push({tp:'lure2',s:nonX[rnd(nonX.length)]}); }
+      if(p==='AX'){trials.push({tp:'cue',s:'A'});trials.push({tp:'t',s:'X'});}
+      else if(p==='BX'){trials.push({tp:'nc',s:nonA[rnd(nonA.length)]});trials.push({tp:'lure',s:'X'});}
+      else{trials.push({tp:'cue',s:'A'});trials.push({tp:'lure2',s:nonX[rnd(nonX.length)]});}
     });
     const fill=N-trials.length;
-    for(let i=0;i<fill&&i>=0;i++) trials.push({tp:'d',s:nonA[rnd(nonA.length)]});
-    const bSz=Math.ceil(trials.length/cfg.isiList.length);
-    trials.forEach((t,i)=>{ t.isi=cfg.isiList[Math.floor(i/bSz)%cfg.isiList.length]; });
+    for(let i=0;i<fill;i++)trials.push({tp:'d',s:nonA[rnd(nonA.length)]});
+    trials.forEach((t,i)=>{t.isi=cfg.isiList[i%cfg.isiList.length];});
   }
   return trials;
 }
-function shuffle(a){ for(let i=a.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [a[i],a[j]]=[a[j],a[i]]; } }
-function rnd(n){ return Math.floor(Math.random()*n); }
-
-// ══ 状态 ══════════════════════════════════════════════════════════
-let S={};
-let TM=null, waiting=false, onset=0, formalStart=0;
-
-function autoAge(){
-  const g=parseInt(document.getElementById('f-grade').value);
-  if(g) document.getElementById('f-age').value=[0,6,7,8,9,10,11][g]||'';
-}
-
+function shuffle(a){for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}}
+function rnd(n){return Math.floor(Math.random()*n);}
+let S={},TM=null,waiting=false,onset=0;
+function autoAge(){const g=parseInt(document.getElementById('f-grade').value);if(g)document.getElementById('f-age').value=[0,6,7,8,9,10,11][g]||'';}
 function toInstructions(){
   const id=document.getElementById('f-id').value.trim();
   const gr=document.getElementById('f-grade').value;
   const ag=parseInt(document.getElementById('f-age').value);
-  if(!id||!gr||!ag||ag<6||ag>14){ alert('请填写完整的学生编号、年级和年龄（6–14岁）'); return; }
-  S={id, grade:parseInt(gr), age:ag, ag:ageGroup(ag), par:gradeToParadigm(parseInt(gr))};
-  renderInst(S.par);
-  go('instruct-screen');
+  if(!id||!gr||!ag||ag<6||ag>14){alert('请填写完整的学生编号、年级和年龄（6–14岁）');return;}
+  S={id,grade:parseInt(gr),age:ag,ag:ageGroup(ag),par:gradeToParadigm(parseInt(gr))};
+  renderInst(S.par);go('instruct-screen');
 }
-
 function renderInst(p){
-  const cfg=PAR[p];
   if(p==='picture'){
     document.getElementById('inst-body').innerHTML=`
       <p style="line-height:1.9;margin-bottom:12px">屏幕上会一个一个出现小动物 🐾<br>只有一种动物需要按键：</p>
@@ -538,66 +340,53 @@ function renderInst(p){
         <div class="demo-desc">看到 <strong style="color:#ffd166">小猫咪</strong> → 按 <strong style="color:#ffd166">空格键</strong></div></div>
       <div class="demo" style="margin-top:8px"><div class="demo-stim" style="font-size:2.5rem">🐶 🐰 🐻 🦊</div>
         <div class="demo-desc">看到 <strong style="color:#7ec8e3">其他动物</strong> → <strong style="color:#7ec8e3">不要按</strong></div></div>
-      <p style="margin-top:12px;font-size:.85rem;color:rgba(255,255,255,.45)">要又快又准！先练习一分钟再开始正式测试。</p>`;
+      <p style="margin-top:12px;font-size:.85rem;color:rgba(255,255,255,.45)">要又快又准！先练习再开始正式测试。</p>`;
   } else if(p==='x'){
     document.getElementById('inst-body').innerHTML=`
       <p style="line-height:1.9;margin-bottom:12px">屏幕上会一个一个出现字母。只有一种字母需要按键：</p>
-      <div class="demo"><div class="demo-stim" style="color:#ffd166;letter-spacing:-2px">X</div>
+      <div class="demo"><div class="demo-stim" style="color:#ffd166">X</div>
         <div class="demo-desc">看到字母 <strong style="color:#ffd166">X</strong> → 按 <strong style="color:#ffd166">空格键</strong></div></div>
       <div class="demo" style="margin-top:8px"><div class="demo-stim" style="font-size:3rem;color:#7ec8e3;letter-spacing:6px">A B C …</div>
         <div class="demo-desc">看到 <strong style="color:#7ec8e3">其他字母</strong> → <strong style="color:#7ec8e3">不要按</strong></div></div>
-      <p style="margin-top:12px;font-size:.85rem;color:rgba(255,255,255,.45)">要又快又准！先练习一分钟再开始正式测试。</p>`;
+      <p style="margin-top:12px;font-size:.85rem;color:rgba(255,255,255,.45)">要又快又准！先练习再开始正式测试。</p>`;
   } else {
     document.getElementById('inst-body').innerHTML=`
       <p style="line-height:1.9;margin-bottom:12px">屏幕上会一个一个出现字母。按键规则只有一条：</p>
-      <div class="demo">
-        <div class="demo-stim"><span style="color:#ef8c5a">A</span>&nbsp;<span style="color:#ffd166">X</span></div>
+      <div class="demo"><div class="demo-stim"><span style="color:#ef8c5a">A</span>&nbsp;<span style="color:#ffd166">X</span></div>
         <div class="demo-desc">先出现 <strong style="color:#ef8c5a">A</strong>，紧接着出现 <strong style="color:#ffd166">X</strong> → 按 <strong style="color:#ffd166">空格键</strong></div></div>
       <div class="demo" style="margin-top:8px;font-size:.88rem;line-height:2.1;color:rgba(255,255,255,.65)">
-        出现 X 但前面不是 A → 不按 &nbsp;｜&nbsp; A 后面不是 X → 不按 &nbsp;｜&nbsp; 其他字母 → 不按</div>
-      <p style="margin-top:12px;font-size:.85rem;color:rgba(255,255,255,.45)">需要记住上一个字母！先练习一分钟再开始正式测试。</p>`;
+        X前面不是A → 不按 ｜ A后面不是X → 不按 ｜ 其他字母 → 不按</div>
+      <p style="margin-top:12px;font-size:.85rem;color:rgba(255,255,255,.45)">需要记住上一个字母！先练习再开始正式测试。</p>`;
   }
 }
-
-// ══ 测试循环 ══════════════════════════════════════════════════════
 function startPractice(){
-  S.isPrac=true; S.done=false;
-  S.trials=buildTrials(S.par,true);
-  S.idx=0; S.resps=[]; S.prev=null;
+  S.isPrac=true;S.done=false;S.trials=buildTrials(S.par,true);
+  S.idx=0;S.resps=[];S.prev=null;
   document.getElementById('h-phase').textContent='练 习';
   document.getElementById('ptag').textContent='PRACTICE';
-  go('test-screen');
-  nextTrial();
+  go('test-screen');nextTrial();
 }
-
 function startFormal(){
-  S.isPrac=false; S.done=false;
-  S.trials=buildTrials(S.par,false);
-  S.idx=0; S.resps=[]; S.prev=null;
-  formalStart=Date.now();
+  S.isPrac=false;S.done=false;S.trials=buildTrials(S.par,false);
+  S.idx=0;S.resps=[];S.prev=null;
   document.getElementById('h-phase').textContent='正 式 测 试';
   document.getElementById('ptag').textContent=PAR[S.par].name.toUpperCase();
-  go('test-screen');
-  nextTrial();
+  go('test-screen');nextTrial();
 }
-
 function nextTrial(){
-  clearTimeout(TM); waiting=false;
-  if(S.done) return;
-
-  const trials=S.trials, idx=S.idx;
-  const pct=Math.min(100,(idx/trials.length)*100);
-  document.getElementById('h-prog').style.width=pct+'%';
+  clearTimeout(TM);waiting=false;
+  if(S.done)return;
+  const trials=S.trials,idx=S.idx;
+  document.getElementById('h-prog').style.width=Math.min(100,idx/trials.length*100)+'%';
   document.getElementById('h-cnt').textContent=idx+'/'+trials.length;
-
-  // 检查时间（正式）或试次耗尽
-  const timeUp=!S.isPrac && Date.now()-formalStart>=PAR[S.par].dur;
-  if(idx>=trials.length||timeUp){
+  if(idx>=trials.length){
     if(S.isPrac){
       const cfg=PAR[S.par];
+      const avgISI=cfg.isiList?cfg.isiList.reduce((a,b)=>a+b,0)/cfg.isiList.length:cfg.isi;
+      const mins=Math.round((cfg.totalN*(avgISI+cfg.stimMs))/60000);
       document.getElementById('break-msg').innerHTML=
         `你做得很棒！🎉<br>练习结束，接下来是正式测试。<br>
-        <span style="font-size:.82rem;color:rgba(255,255,255,.38)">时长约 ${cfg.dur/60000} 分钟，准备好就继续！</span>`;
+        <span style="font-size:.82rem;color:rgba(255,255,255,.38)">共${cfg.totalN}题，约${mins}分钟，准备好就继续！</span>`;
       go('break-screen');
     } else {
       S.done=true;
@@ -606,532 +395,237 @@ function nextTrial(){
     }
     return;
   }
-
   const t=trials[idx];
-
-  // AX提示
+  const stimMs=PAR[S.par].stimMs;
+  const postWait=Math.max(200,t.isi-stimMs);
+  const totalCycle=t.isi+stimMs+postWait;
   const axEl=document.getElementById('ax-cue');
   if(S.par==='ax'){
     axEl.style.display='block';
     axEl.textContent=S.prev==='A'?'⚠ 上一个是 A！':'';
     axEl.style.color=S.prev==='A'?'rgba(239,140,90,.65)':'rgba(255,255,255,.18)';
-  } else { axEl.style.display='none'; }
-
-  // 先准备好内容（隐藏中），再切换可见
+  } else {axEl.style.display='none';}
   const fix=document.getElementById('fixation');
   const stEl=document.getElementById('stim-el');
-  stEl.style.display='none';
-  stEl.textContent='';
-  fix.style.display='block';
-  fix.textContent='+';
-
-  TM=setTimeout(()=>{
-    // 写内容
-    stEl.textContent=t.s;
-    stEl.style.fontSize=S.par==='picture'?'8rem':'9rem';
-    stEl.style.fontWeight=S.par==='picture'?'400':'900';
-
-    requestAnimationFrame(()=>{
-      fix.style.display='none';
-      stEl.style.display='block';
-      waiting=true;
-      onset=performance.now();
-
-      // 刺激消失
-      TM=setTimeout(()=>{
-        stEl.style.display='none';
-        fix.style.display='block';
-
-        // 剩余响应窗口
-        TM=setTimeout(()=>{
-          if(waiting){
-            waiting=false;
-            if(!S.isPrac) logResp(t,false,null); // miss
-            S.prev=t.s; S.idx++;
-            nextTrial();
-          }
-        }, Math.max(50, t.isi - PAR[S.par].stimMs));
-      }, PAR[S.par].stimMs);
-    });
-  }, t.isi);
+  stEl.style.display='none';stEl.textContent='';
+  fix.style.display='block';fix.textContent='+';
+  const trialStart=performance.now();
+  function tick(){
+    const elapsed=performance.now()-trialStart;
+    if(elapsed<t.isi){TM=setTimeout(tick,t.isi-elapsed);return;}
+    if(elapsed<t.isi+stimMs){
+      if(stEl.style.display==='none'){
+        stEl.textContent=t.s;
+        stEl.style.fontSize=S.par==='picture'?'8rem':'9rem';
+        stEl.style.fontWeight=S.par==='picture'?'400':'900';
+        fix.style.display='none';stEl.style.display='block';
+        waiting=true;onset=performance.now();
+      }
+      TM=setTimeout(tick,t.isi+stimMs-elapsed);return;
+    }
+    if(elapsed<totalCycle){
+      if(stEl.style.display!=='none'){stEl.style.display='none';fix.style.display='block';}
+      if(waiting){TM=setTimeout(tick,totalCycle-elapsed);}
+      else{advanceTrial();}
+      return;
+    }
+    if(waiting){waiting=false;if(!S.isPrac)logResp(t,false,null);}
+    advanceTrial();
+  }
+  function advanceTrial(){S.prev=t.s;S.idx++;TM=setTimeout(nextTrial,0);}
+  TM=setTimeout(tick,0);
 }
-
-// 键盘
-document.addEventListener('keydown', e=>{
-  if(e.code!=='Space') return;
+document.addEventListener('keydown',e=>{
+  if(e.code!=='Space')return;
   e.preventDefault();
   if(!waiting){
-    // 刺激间期乱按 = 虚报
-    if(!S.isPrac && S.idx>0 && !S.done) logResp(null,true,performance.now()-onset);
+    if(!S.isPrac&&S.idx>0&&!S.done)logResp(null,true,performance.now()-onset);
     return;
   }
-  clearTimeout(TM);
-  waiting=false;
+  clearTimeout(TM);waiting=false;
   const t=S.trials[S.idx];
   const rt=performance.now()-onset;
-  if(!S.isPrac) logResp(t,true,rt);
-  if(S.isPrac){
-    const isT=t.tp==='t';
-    flash(isT); // 按了目标=对
-  }
-  S.prev=t.s; S.idx++;
-  if(!S.done) setTimeout(nextTrial,80);
+  if(!S.isPrac)logResp(t,true,rt);
+  if(S.isPrac)flash(t.tp==='t');
+  document.getElementById('stim-el').style.display='none';
+  document.getElementById('fixation').style.display='block';
+  S.prev=t.s;S.idx++;
+  if(!S.done)TM=setTimeout(nextTrial,80);
 });
-
-function flash(ok){
-  const ts=document.getElementById('test-screen');
-  ts.classList.remove('fl-g','fl-r');
-  void ts.offsetWidth;
-  ts.classList.add(ok?'fl-g':'fl-r');
-}
-
-function logResp(t,pressed,rt){
-  S.resps.push({
-    tp:    t?t.tp:'isi',
-    s:     t?t.s:null,
-    pressed, rt,
-    hit:   t&&t.tp==='t'&&pressed,
-    miss:  t&&t.tp==='t'&&!pressed,
-    fa:    (t&&t.tp!=='t'&&pressed)||(!t&&pressed),
-    cr:    t&&t.tp!=='t'&&!pressed,
-  });
-}
-
-// ══ 指标计算 ══════════════════════════════════════════════════════
+function flash(ok){const ts=document.getElementById('test-screen');ts.classList.remove('fl-g','fl-r');void ts.offsetWidth;ts.classList.add(ok?'fl-g':'fl-r');}
+function logResp(t,pressed,rt){S.resps.push({tp:t?t.tp:'isi',s:t?t.s:null,pressed,rt,hit:t&&t.tp==='t'&&pressed,miss:t&&t.tp==='t'&&!pressed,fa:(t&&t.tp!=='t'&&pressed)||(!t&&pressed),cr:t&&t.tp!=='t'&&!pressed});}
 function computeMetrics(resps){
-  const tgts  = resps.filter(r=>r.tp==='t');
-  const nTgts = resps.filter(r=>r.tp!=='t'&&r.tp!=='isi');
-  const hits  = tgts.filter(r=>r.hit).length;
-  const miss  = tgts.filter(r=>r.miss).length;
-  const fa    = resps.filter(r=>r.fa).length;
-
-  // ── 原始比率 ──
-  const HR  = tgts.length  ? hits/tgts.length  : 0;
-  const FAR = nTgts.length ? fa/nTgts.length   : 0;
-  const omR = Math.round((1-HR)*1000)/10;   // 漏报率%（展示用）
-  const comR= Math.round(FAR*1000)/10;       // 虚报率%（展示用）
-
-  // ── 反应时 ──
-  const hitRTs = tgts.filter(r=>r.hit&&r.rt>80&&r.rt<1600).map(r=>r.rt);
-  const rtM  = hitRTs.length ? hitRTs.reduce((a,b)=>a+b,0)/hitRTs.length : null;
-  const rtSD = hitRTs.length>1
-    ? Math.sqrt(hitRTs.reduce((a,b)=>a+(b-rtM)**2,0)/hitRTs.length)
-    : null;
-
-  // ── d' ──
+  const tgts=resps.filter(r=>r.tp==='t');
+  const nTgts=resps.filter(r=>r.tp!=='t'&&r.tp!=='isi');
+  const hits=tgts.filter(r=>r.hit).length;
+  const miss=tgts.filter(r=>r.miss).length;
+  const fa=resps.filter(r=>r.fa).length;
+  const HR=tgts.length?hits/tgts.length:0;
+  const FAR=nTgts.length?fa/nTgts.length:0;
+  const omR=Math.round((1-HR)*1000)/10;
+  const comR=Math.round(FAR*1000)/10;
+  const hitRTs=tgts.filter(r=>r.hit&&r.rt>80&&r.rt<1600).map(r=>r.rt);
+  const rtM=hitRTs.length?hitRTs.reduce((a,b)=>a+b,0)/hitRTs.length:null;
+  const rtSD=hitRTs.length>1?Math.sqrt(hitRTs.reduce((a,b)=>a+(b-rtM)**2,0)/hitRTs.length):null;
   function zInv(p){
     const pp=Math.max(.001,Math.min(.999,p));
-    const c=[2.515517,0.802853,0.010328], d=[1.432788,0.189269,0.001308];
+    const c=[2.515517,0.802853,0.010328],d=[1.432788,0.189269,0.001308];
     const t=Math.sqrt(-2*Math.log(pp<.5?pp:1-pp));
     const z=t-(c[0]+c[1]*t+c[2]*t*t)/(1+d[0]*t+d[1]*t*t+d[2]*t*t*t);
     return pp<.5?-z:z;
   }
-  const dp = zInv(Math.max(.001,Math.min(.999,HR))) - zInv(Math.max(.001,Math.min(.999,FAR)));
-
-  // ── 毅力指数（前半段 vs 后半段） ──
-  const half = Math.floor(tgts.length/2);
-  const first = tgts.slice(0, half), second = tgts.slice(half);
-  const HR1 = first.length  ? first.filter(r=>r.hit).length/first.length   : null;
-  const HR2 = second.length ? second.filter(r=>r.hit).length/second.length  : null;
-  const rtFirst  = first.filter(r=>r.hit&&r.rt>80&&r.rt<1600).map(r=>r.rt);
-  const rtSecond = second.filter(r=>r.hit&&r.rt>80&&r.rt<1600).map(r=>r.rt);
-  const rtM1 = rtFirst.length  ? rtFirst.reduce((a,b)=>a+b,0)/rtFirst.length   : null;
-  const rtM2 = rtSecond.length ? rtSecond.reduce((a,b)=>a+b,0)/rtSecond.length  : null;
-  // IVA毅力：(后半段/前半段命中率) × (前半段/后半段RT) —— 越接近1越稳定
-  const persistence = (HR1&&HR2&&rtM1&&rtM2)
-    ? Math.round((HR2/HR1)*(rtM1/rtM2)*100)/100
-    : null;
-
-  // ── 三段漏报（展示衰减曲线） ──
-  const sz  = Math.floor(resps.length/3);
-  const segs= [0,1,2].map(i=>{
-    const s=resps.slice(i*sz,(i+1)*sz).filter(r=>r.tp==='t');
-    return s.length ? Math.round(s.filter(r=>r.miss).length/s.length*1000)/10 : null;
-  });
-  const decayFlag = segs[0]!==null&&segs[2]!==null&&(segs[2]-segs[0])>15;
-
-  return {
-    // 存入常模的三个基础维度
-    HR:   Math.round(HR*1000)/1000,
-    FAR:  Math.round(FAR*1000)/1000,
-    rtSD: rtSD ? Math.round(rtSD) : null,
-    // 展示用原始指标
-    omR, comR,
-    rtM:  rtM ? Math.round(rtM) : null,
-    dp:   Math.round(dp*100)/100,
-    persistence, segs, decayFlag,
-    hits, miss, fa, nT:tgts.length, nNT:nTgts.length,
-  };
+  const dp=zInv(Math.max(.001,Math.min(.999,HR)))-zInv(Math.max(.001,Math.min(.999,FAR)));
+  const half=Math.floor(tgts.length/2);
+  const first=tgts.slice(0,half),second=tgts.slice(half);
+  const HR1=first.length?first.filter(r=>r.hit).length/first.length:null;
+  const HR2=second.length?second.filter(r=>r.hit).length/second.length:null;
+  const rt1=first.filter(r=>r.hit&&r.rt>80&&r.rt<1600).map(r=>r.rt);
+  const rt2=second.filter(r=>r.hit&&r.rt>80&&r.rt<1600).map(r=>r.rt);
+  const rtM1=rt1.length?rt1.reduce((a,b)=>a+b,0)/rt1.length:null;
+  const rtM2=rt2.length?rt2.reduce((a,b)=>a+b,0)/rt2.length:null;
+  const persistence=(HR1&&HR2&&rtM1&&rtM2)?Math.round((HR2/HR1)*(rtM1/rtM2)*100)/100:null;
+  const sz=Math.floor(resps.length/3);
+  const segs=[0,1,2].map(i=>{const s=resps.slice(i*sz,(i+1)*sz).filter(r=>r.tp==='t');return s.length?Math.round(s.filter(r=>r.miss).length/s.length*1000)/10:null;});
+  const decayFlag=segs[0]!==null&&segs[2]!==null&&(segs[2]-segs[0])>15;
+  return{HR:Math.round(HR*1000)/1000,FAR:Math.round(FAR*1000)/1000,rtSD:rtSD?Math.round(rtSD):null,omR,comR,rtM:rtM?Math.round(rtM):null,dp:Math.round(dp*100)/100,persistence,segs,decayFlag,hits,miss,fa,nT:tgts.length,nNT:nTgts.length};
 }
-
-// ══ 完成 ══════════════════════════════════════════════════════════
-async function finishTest(){
-  const m   = computeMetrics(S.resps);
-  const norm = getNorm(S.ag);
-
-  // 存入记录（三个常模维度 + 展示指标）
-  const rec = {
-    id:S.id, grade:S.grade, age:S.age, ag:S.ag, par:S.par,
-    HR:m.HR, FAR:m.FAR, rtSD:m.rtSD,         // 常模计算用
-    omR:m.omR, comR:m.comR, rtM:m.rtM, dp:m.dp,  // 展示用
-    date:new Date().toLocaleDateString('zh-CN'), ts:Date.now()
-  };
+  function finishTest(){
+  const m=computeMetrics(S.resps);
+  const norm=getNorm(S.ag);
+  const rec={id:S.id,grade:S.grade,age:S.age,ag:S.ag,par:S.par,HR:m.HR,FAR:m.FAR,rtSD:m.rtSD,omR:m.omR,comR:m.comR,rtM:m.rtM,dp:m.dp,date:new Date().toLocaleDateString('zh-CN'),ts:Date.now()};
   saveRec(rec);
-
-  // 计算 VAQ / VRCQ
-  const { VAQ, VRCQ } = calcQuotients(m, norm);
-  const normN  = norm?._n || norm?.HR?.n || 0;
-  const frozen = norm?._frozen;
-
-  // 商数判定
-  const vaqFlag  = flagQuotient(VAQ);
-  const vrcqFlag = flagQuotient(VRCQ);
-  const anyFlag  = vaqFlag!=='ok' || vrcqFlag!=='ok' || m.decayFlag;
-
-  // 颜色映射
-  const flagColor = { high:'#e05f5f', flag:'#ffd166', ok:'#06d6a0', n:'#7ec8e3' };
-
-  // ── 结果子标题 ──
-  document.getElementById('r-sub').textContent =
-    `${S.id} · ${S.age}岁 · ${'一二三四五六'[S.grade-1]}年级 · ${PAR[S.par].name}`;
-
-  // ── 总体判定 badge ──
-  const badge = document.getElementById('r-badge');
-  if(!norm){
-    badge.className='badge b-norm';
-    badge.textContent='⏳ 测试完成（常模积累中，需同组 ≥30 人后才能计算商数）';
-  } else if(vaqFlag==='high'||vrcqFlag==='high'){
-    badge.className='badge b-flag';
-    badge.innerHTML='🔴 注意力商数显著偏低（<80），强烈建议补充评估';
-  } else if(anyFlag){
-    badge.className='badge b-flag';
-    badge.innerHTML='⚠️ 注意力商数偏低（<85），建议进行补充评估'
-      +(m.decayFlag?'<br><small style="opacity:.75">（同时检测到持续注意力衰减）</small>':'');
-  } else {
-    badge.className='badge b-ok';
-    badge.textContent='✅ 视觉注意力商数和控制力商数均在正常范围（≥85）';
-  }
-
-  // ── 两个大商数卡片 + 原始指标 ──
-  const normStr = norm
-    ? `（基于 ${normN} 人常模，均值=100，SD=15）`
-    : '（常模积累中）';
-
-  document.getElementById('r-metrics').innerHTML = `
-
-    <!-- VAQ / VRCQ 主卡片 -->
+  const{VAQ,VRCQ}=calcQuotients(m,norm);
+  const normN=norm?._n||norm?.HR?.n||0;
+  const vaqFlag=flagQuotient(VAQ);
+  const vrcqFlag=flagQuotient(VRCQ);
+  const anyFlag=vaqFlag!=='ok'||vrcqFlag!=='ok'||m.decayFlag;
+  const flagColor={high:'#e05f5f',flag:'#ffd166',ok:'#06d6a0',n:'#7ec8e3'};
+  document.getElementById('r-sub').textContent=`${S.id} · ${S.age}岁 · ${'一二三四五六'[S.grade-1]}年级 · ${PAR[S.par].name}`;
+  const badge=document.getElementById('r-badge');
+  if(!norm){badge.className='badge b-norm';badge.textContent='⏳ 测试完成（常模积累中，需同组≥30人后才能计算商数）';}
+  else if(vaqFlag==='high'||vrcqFlag==='high'){badge.className='badge b-flag';badge.innerHTML='🔴 注意力商数显著偏低（<80），强烈建议补充评估';}
+  else if(anyFlag){badge.className='badge b-flag';badge.innerHTML='⚠️ 注意力商数偏低（<85），建议进行补充评估'+(m.decayFlag?'<br><small style="opacity:.75">（同时检测到持续注意力衰减）</small>':'');}
+  else{badge.className='badge b-ok';badge.textContent='✅ 视觉注意力商数和控制力商数均在正常范围（≥85）';}
+  const normStr=norm?`（基于${normN}人常模，均值=100，SD=15）`:'（常模积累中）';
+  document.getElementById('r-metrics').innerHTML=`
     <div class="mc" style="grid-column:1/-1;display:flex;gap:16px;padding:20px 24px;background:rgba(255,255,255,.09)">
       <div style="flex:1;text-align:center;border-right:1px solid rgba(255,255,255,.1);padding-right:16px">
         <div class="mc-lbl" style="font-size:.82rem;margin-bottom:8px">视觉注意力商（VAQ）</div>
         <div class="mc-val" style="font-size:3.2rem;color:${flagColor[vaqFlag]}">${VAQ??'—'}</div>
-        <div style="margin-top:6px">
-          ${vaqFlag==='high' ? '<span style="color:#e05f5f;font-size:.8rem;font-weight:800">🔴 显著偏低 &lt;80</span>'
-          : vaqFlag==='flag' ? '<span style="color:#ffd166;font-size:.8rem;font-weight:800">⚠ 偏低 &lt;85</span>'
-          : vaqFlag==='ok'   ? '<span style="color:#06d6a0;font-size:.8rem;font-weight:800">✅ 正常 ≥85</span>'
-          : '<span style="color:#7ec8e3;font-size:.8rem">待常模</span>'}
-        </div>
+        <div style="margin-top:6px">${vaqFlag==='high'?'<span style="color:#e05f5f;font-size:.8rem;font-weight:800">🔴 显著偏低 &lt;80</span>':vaqFlag==='flag'?'<span style="color:#ffd166;font-size:.8rem;font-weight:800">⚠ 偏低 &lt;85</span>':vaqFlag==='ok'?'<span style="color:#06d6a0;font-size:.8rem;font-weight:800">✅ 正常 ≥85</span>':'<span style="color:#7ec8e3;font-size:.8rem">待常模</span>'}</div>
         <div style="font-size:.72rem;color:rgba(255,255,255,.35);margin-top:6px">命中率×0.6 + 反应时稳定性×0.4</div>
       </div>
       <div style="flex:1;text-align:center;padding-left:16px">
         <div class="mc-lbl" style="font-size:.82rem;margin-bottom:8px">视觉控制力商（VRCQ）</div>
         <div class="mc-val" style="font-size:3.2rem;color:${flagColor[vrcqFlag]}">${VRCQ??'—'}</div>
-        <div style="margin-top:6px">
-          ${vrcqFlag==='high' ? '<span style="color:#e05f5f;font-size:.8rem;font-weight:800">🔴 显著偏低 &lt;80</span>'
-          : vrcqFlag==='flag' ? '<span style="color:#ffd166;font-size:.8rem;font-weight:800">⚠ 偏低 &lt;85</span>'
-          : vrcqFlag==='ok'   ? '<span style="color:#06d6a0;font-size:.8rem;font-weight:800">✅ 正常 ≥85</span>'
-          : '<span style="color:#7ec8e3;font-size:.8rem">待常模</span>'}
-        </div>
+        <div style="margin-top:6px">${vrcqFlag==='high'?'<span style="color:#e05f5f;font-size:.8rem;font-weight:800">🔴 显著偏低 &lt;80</span>':vrcqFlag==='flag'?'<span style="color:#ffd166;font-size:.8rem;font-weight:800">⚠ 偏低 &lt;85</span>':vrcqFlag==='ok'?'<span style="color:#06d6a0;font-size:.8rem;font-weight:800">✅ 正常 ≥85</span>':'<span style="color:#7ec8e3;font-size:.8rem">待常模</span>'}</div>
         <div style="font-size:.72rem;color:rgba(255,255,255,.35);margin-top:6px">虚报抑制×0.7 + 命中率×0.3</div>
       </div>
     </div>
-
-    <!-- 原始指标 -->
-    <div class="mc">
-      <div class="mc-lbl">命中率（HR）</div>
-      <div class="mc-val" style="color:#7ec8e3">${Math.round(m.HR*1000)/10}%</div>
-      <div class="mc-norm">漏报率 ${m.omR}%</div>
-    </div>
-    <div class="mc">
-      <div class="mc-lbl">虚报率（FAR）</div>
-      <div class="mc-val" style="color:#7ec8e3">${m.comR}%</div>
-      <div class="mc-norm">冲动控制指标</div>
-    </div>
-    <div class="mc">
-      <div class="mc-lbl">反应时均值</div>
-      <div class="mc-val" style="color:#7ec8e3">${m.rtM??'—'}<span style="font-size:1rem">ms</span></div>
-      <div class="mc-norm">命中试次平均速度</div>
-    </div>
-    <div class="mc">
-      <div class="mc-lbl">反应时标准差（RT-SD）</div>
-      <div class="mc-val" style="color:#7ec8e3">${m.rtSD??'—'}<span style="font-size:1rem">ms</span></div>
-      <div class="mc-norm">越小越稳定</div>
-    </div>
-    <div class="mc">
-      <div class="mc-lbl">辨别力 d′</div>
-      <div class="mc-val" style="color:#7ec8e3">${m.dp}</div>
-      <div class="mc-norm">信号检测综合指标</div>
-    </div>
-    <div class="mc">
-      <div class="mc-lbl">毅力指数</div>
-      <div class="mc-val" style="color:${m.persistence&&m.persistence<0.85?'#ffd166':'#7ec8e3'}">${m.persistence??'—'}</div>
-      <div class="mc-norm">≥0.85 为稳定，&lt;0.85 提示衰减</div>
-    </div>
-
-    ${m.decayFlag ? `
-    <div class="mc" style="grid-column:1/-1">
-      <div class="mc-lbl">持续注意力衰减</div>
-      <div class="mc-val" style="color:#ffd166;font-size:1.1rem">前段 ${m.segs[0]?.toFixed(0)}% → 中段 ${m.segs[1]?.toFixed(0)}% → 后段 ${m.segs[2]?.toFixed(0)}%（漏报率）</div>
-      <div class="mc-norm">漏报率随时间上升 &gt;15%，提示持续注意维持困难</div>
-      <div class="mc-flag" style="color:#ffd166">⚠ 注意力衰减</div>
-    </div>` : ''}
-  `;
-
-  document.getElementById('r-note').innerHTML =
-    `<b style="color:rgba(255,255,255,.5)">商数说明：</b>
-    VAQ（视觉注意力商）反映持续注意质量；VRCQ（视觉控制力商）反映冲动抑制能力。
-    两者均以100为均值、15为SD，低于85（−1SD）提示需关注，低于80（−1.33SD）为显著异常。
-    ${normStr}<br>
-    <b style="color:rgba(255,255,255,.5)">免责：</b>本结果仅供研究参考，不作临床诊断依据。`;
-
-  S.lastRec=rec; S.lastM=m; S.lastVAQ=VAQ; S.lastVRCQ=VRCQ;
+    <div class="mc"><div class="mc-lbl">命中率（HR）</div><div class="mc-val" style="color:#7ec8e3">${Math.round(m.HR*1000)/10}%</div><div class="mc-norm">漏报率 ${m.omR}%</div></div>
+    <div class="mc"><div class="mc-lbl">虚报率（FAR）</div><div class="mc-val" style="color:#7ec8e3">${m.comR}%</div><div class="mc-norm">冲动控制指标</div></div>
+    <div class="mc"><div class="mc-lbl">反应时均值</div><div class="mc-val" style="color:#7ec8e3">${m.rtM??'—'}<span style="font-size:1rem">ms</span></div><div class="mc-norm">命中试次平均速度</div></div>
+    <div class="mc"><div class="mc-lbl">反应时标准差（RT-SD）</div><div class="mc-val" style="color:#7ec8e3">${m.rtSD??'—'}<span style="font-size:1rem">ms</span></div><div class="mc-norm">越小越稳定</div></div>
+    <div class="mc"><div class="mc-lbl">辨别力 d′</div><div class="mc-val" style="color:#7ec8e3">${m.dp}</div><div class="mc-norm">信号检测综合指标</div></div>
+    <div class="mc"><div class="mc-lbl">毅力指数</div><div class="mc-val" style="color:${m.persistence&&m.persistence<0.85?'#ffd166':'#7ec8e3'}">${m.persistence??'—'}</div><div class="mc-norm">≥0.85稳定，&lt;0.85提示衰减</div></div>
+    ${m.decayFlag?`<div class="mc" style="grid-column:1/-1"><div class="mc-lbl">持续注意力衰减</div><div class="mc-val" style="color:#ffd166;font-size:1.1rem">前段${m.segs[0]?.toFixed(0)}% → 中段${m.segs[1]?.toFixed(0)}% → 后段${m.segs[2]?.toFixed(0)}%</div><div class="mc-norm">漏报率随时间上升&gt;15%，提示持续注意维持困难</div><div class="mc-flag" style="color:#ffd166">⚠ 注意力衰减</div></div>`:''}`;
+  document.getElementById('r-note').innerHTML=`<b style="color:rgba(255,255,255,.5)">商数说明：</b>VAQ反映持续注意质量；VRCQ反映冲动抑制能力。均值100，SD15，低于85需关注，低于80为显著异常。${normStr}<br><b style="color:rgba(255,255,255,.5)">免责：</b>本结果仅供研究参考，不作临床诊断依据。`;
+  S.lastRec=rec;S.lastM=m;S.lastVAQ=VAQ;S.lastVRCQ=VRCQ;
   go('result-screen');
 }
-
-function resetAll(){
-  S={};
-  document.getElementById('f-id').value='';
-  document.getElementById('f-grade').value='';
-  document.getElementById('f-age').value='';
-}
-
-// ══ 导出 ══════════════════════════════════════════════════════════
+function resetAll(){S={};document.getElementById('f-id').value='';document.getElementById('f-grade').value='';document.getElementById('f-age').value='';}
 function doExport(){
-  if(!S.lastRec) return;
-  const r=S.lastRec, m=S.lastM;
-  let t=`视觉IVA-CPT注意力测试结果\n`;
-  t+=`学生编号：${r.id}　年龄：${r.age}岁　年级：${'一二三四五六'[r.grade-1]}年级　范式：${PAR[r.par].name}\n`;
-  t+=`测试日期：${r.date}\n\n`;
-  t+=`【商数指标】\n`;
-  t+=`视觉注意力商（VAQ）：${S.lastVAQ??'—'}　（≥85正常，<85需关注，<80高风险）\n`;
-  t+=`视觉控制力商（VRCQ）：${S.lastVRCQ??'—'}　（≥85正常，<85需关注，<80高风险）\n\n`;
-  t+=`【原始指标】\n`;
-  t+=`命中率（HR）：${Math.round(m.HR*1000)/10}%　漏报率：${m.omR}%\n`;
-  t+=`虚报率（FAR）：${m.comR}%\n`;
-  t+=`反应时均值：${m.rtM??'—'}ms\n`;
-  t+=`反应时标准差（RT-SD）：${m.rtSD??'—'}ms\n`;
-  t+=`辨别力 d′：${m.dp}\n`;
-  t+=`毅力指数：${m.persistence??'—'}　（≥0.85稳定）\n`;
-  if(m.segs) t+=`\n持续注意分段漏报：前${m.segs[0]?.toFixed(1)}% | 中${m.segs[1]?.toFixed(1)}% | 后${m.segs[2]?.toFixed(1)}%\n`;
-  t+=`\n注：本结果仅供研究参考，不作临床诊断依据。`;
-  dlText(t, `IVA-CPT_${r.id}_${r.date.replace(/\//g,'')}.txt`);
+  if(!S.lastRec)return;
+  const r=S.lastRec,m=S.lastM;
+  let t=`视觉IVA-CPT注意力测试结果\n学生编号：${r.id}　年龄：${r.age}岁　年级：${'一二三四五六'[r.grade-1]}年级　范式：${PAR[r.par].name}\n测试日期：${r.date}\n\n【商数指标】\nVAQ：${S.lastVAQ??'—'}　VRCQ：${S.lastVRCQ??'—'}\n\n【原始指标】\n命中率：${Math.round(m.HR*1000)/10}%　漏报率：${m.omR}%\n虚报率：${m.comR}%\nRT均值：${m.rtM??'—'}ms　RT-SD：${m.rtSD??'—'}ms\nd′：${m.dp}　毅力：${m.persistence??'—'}\n`;
+  if(m.segs)t+=`\n分段漏报：前${m.segs[0]?.toFixed(1)}%|中${m.segs[1]?.toFixed(1)}%|后${m.segs[2]?.toFixed(1)}%\n`;
+  t+=`\n注：仅供研究参考，不作临床诊断依据。`;
+  dlText(t,`IVA-CPT_${r.id}_${r.date.replace(/\//g,'')}.txt`);
 }
-
-async function exportAll(){
-  const recs=await loadRecs();
-  if(!recs.length){ alert('暂无数据'); return; }
-  const norm_cache=loadNorm();
+function exportAll(){
+  const recs=loadRecs();
+  if(!recs.length){alert('暂无数据');return;}
+  const nc=loadNorm();
   const hdr=['编号','年龄','年级','年龄组','范式','VAQ','VRCQ','命中率HR','虚报率FAR','RT均值ms','RT标准差ms','d\'','漏报率%','虚报率%','日期'];
-  const rows=recs.map(r=>{
-    const nm=norm_cache[r.ag];
-    const {VAQ,VRCQ}=calcQuotients({HR:r.HR,FAR:r.FAR,rtSD:r.rtSD}, nm);
-    return [r.id,r.age,r.grade,r.ag,r.par,VAQ??'',VRCQ??'',r.HR,r.FAR,r.rtM??'',r.rtSD??'',r.dp??'',r.omR,r.comR,r.date];
-  });
-  dlText('\ufeff'+[hdr,...rows].map(r=>r.join(',')).join('\n'),
-    `IVA-CPT_全部数据_${new Date().toLocaleDateString('zh-CN').replace(/\//g,'')}.csv`);
+  const rows=recs.map(r=>{const nm=nc[r.ag];const{VAQ,VRCQ}=calcQuotients({HR:r.HR,FAR:r.FAR,rtSD:r.rtSD},nm);return[r.id,r.age,r.grade,r.ag,r.par,VAQ??'',VRCQ??'',r.HR,r.FAR,r.rtM??'',r.rtSD??'',r.dp??'',r.omR,r.comR,r.date];});
+  dlText('\ufeff'+[hdr,...rows].map(r=>r.join(',')).join('\n'),`IVA-CPT_全部数据_${new Date().toLocaleDateString('zh-CN').replace(/\//g,'')}.csv`);
 }
-
-async function importCSV(inp){
-  const file=inp.files[0]; if(!file) return;
-  const text = await file.text();
-  const lines = text.split('\n').slice(1).filter(l=>l.trim());
-  const existing = await loadRecs();
-  const keys = new Set(existing.map(r=>r.id+'_'+r.date));
-  let added=0;
-  for(const line of lines){
-    const c=line.split(',');
-    if(c.length<10) continue;
-    const rec={id:c[0],age:+c[1],grade:+c[2],ag:c[3]||ageGroup(+c[1]),
-      par:c[4]||'x',HR:+c[7]||0,FAR:+c[8]||0,rtSD:c[9]?+c[9]:null,
-      omR:+c[12],comR:+c[13],rtM:c[10]?+c[10]:null,dp:+c[11]||0,
-      date:(c[14]||'').trim(),ts:Date.now()+added};
-    if(!keys.has(rec.id+'_'+rec.date)){
-      await fetch('/api/save-record',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(rec)});
-      added++;
-    }
-  }
-  _recsCache=null;
-  alert('导入完成，新增 '+added+' 条记录。');
-  renderAdmin();
-}
-
-async function clearAll(){
-  if(!confirm('确认清空所有数据？此操作不可撤销，将删除云端所有记录。')) return;
-  try{
-    await fetch('/api/clear-records',{method:'POST'});
-  }catch(e){}
-  _recsCache=null; _normCache=null;
-  try{ localStorage.removeItem('cpt_norm_local'); }catch(e){}
-  renderAdmin();
-}
-
-function dlText(text, fname) {
-  // Safari 在 file:// 协议下禁止所有文件下载，统一用弹窗+复制到剪贴板
-  const isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
-  const isFile   = location.protocol === 'file:';
-
-  if (!isSafari && !isFile) {
-    // Chrome / Edge / Firefox：正常下载
-    try {
-      const blob = new Blob([text], { type: 'text/plain;charset=utf-8' });
-      const url  = URL.createObjectURL(blob);
-      const a    = document.createElement('a');
-      a.href = url; a.download = fname;
-      document.body.appendChild(a); a.click(); document.body.removeChild(a);
-      setTimeout(() => URL.revokeObjectURL(url), 1000);
-      return;
-    } catch(e) {}
-  }
-
-  // Safari / file:// 通用方案：弹窗 + 一键复制
-  const ov  = document.createElement('div');
-  ov.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,.75);z-index:9999;display:flex;align-items:center;justify-content:center;padding:20px';
-
-  const isCSV = fname.endsWith('.csv');
-  const box = document.createElement('div');
-  box.style.cssText = 'background:#0f2540;border:1px solid #7ec8e3;border-radius:14px;padding:22px;width:100%;max-width:580px';
-  box.innerHTML = `
-    <p style="color:#7ec8e3;font-weight:800;margin-bottom:4px;font-size:1rem">📋 ${fname}</p>
-    <p style="color:rgba(255,255,255,.45);font-size:.78rem;margin-bottom:12px">
-      Safari 不支持本地文件下载。请点击「复制全部」，然后粘贴到${isCSV?'Numbers 或 Excel':'备忘录或文本编辑器'}中保存。
-    </p>`;
-
-  const ta = document.createElement('textarea');
-  ta.value = text;
-  ta.readOnly = true;
-  ta.style.cssText = 'width:100%;height:180px;background:#0d1b2a;color:#fff;border:1px solid rgba(255,255,255,.2);border-radius:8px;padding:10px;font-size:11px;font-family:monospace;resize:none;display:block';
-
-  const btnRow = document.createElement('div');
-  btnRow.style.cssText = 'display:flex;gap:10px;margin-top:12px';
-
-  const copyBtn = document.createElement('button');
-  copyBtn.textContent = '📋 复制全部';
-  copyBtn.className = 'btn btn-y';
-  copyBtn.style.flex = '1';
-  copyBtn.onclick = () => {
-    navigator.clipboard.writeText(text).then(() => {
-      copyBtn.textContent = '✅ 已复制！';
-      setTimeout(() => { copyBtn.textContent = '📋 复制全部'; }, 2000);
-    }).catch(() => {
-      ta.select(); document.execCommand('copy');
-      copyBtn.textContent = '✅ 已复制！';
-      setTimeout(() => { copyBtn.textContent = '📋 复制全部'; }, 2000);
+function importCSV(inp){
+  const file=inp.files[0];if(!file)return;
+  const reader=new FileReader();
+  reader.onload=e=>{
+    const lines=e.target.result.split('\n').slice(1).filter(l=>l.trim());
+    const existing=loadRecs();
+    const keys=new Set(existing.map(r=>r.id+'_'+r.date));
+    const merged=[...existing];let added=0;
+    lines.forEach(line=>{
+      const c=line.split(',');if(c.length<10)return;
+      const rec={id:c[0],age:+c[1],grade:+c[2],ag:c[3]||ageGroup(+c[1]),par:c[4]||'x',HR:+c[7]||0,FAR:+c[8]||0,rtSD:c[9]?+c[9]:null,omR:+c[12]||0,comR:+c[13]||0,rtM:c[10]?+c[10]:null,dp:+c[11]||0,date:(c[14]||'').trim(),ts:Date.now()+added};
+      if(!keys.has(rec.id+'_'+rec.date)){merged.push(rec);added++;}
     });
+    lsSet(SK,JSON.stringify(merged));recomputeNorm(merged);
+    alert(`导入完成，新增${added}条记录。`);renderAdmin();
   };
-
-  const closeBtn = document.createElement('button');
-  closeBtn.textContent = '关闭';
-  closeBtn.className = 'btn btn-s';
-  closeBtn.onclick = () => document.body.removeChild(ov);
-
-  btnRow.appendChild(copyBtn);
-  btnRow.appendChild(closeBtn);
-  box.appendChild(ta);
-  box.appendChild(btnRow);
-  ov.appendChild(box);
-  document.body.appendChild(ov);
-  ta.select();
+  reader.readAsText(file,'utf-8');
 }
-
-// ══ 管理员渲染 ════════════════════════════════════════════════════
-async function renderAdmin(){
-  const recs  = await loadRecs();
-  const cache = loadNorm();
-  const groups= ['6-7','8-9','10-11','12+'];
-
-  let html=`<p style="color:rgba(255,255,255,.38);font-size:.78rem;margin-bottom:12px">
-    共 <strong style="color:#7ec8e3">${recs.length}</strong> 条记录 ·
-    ≥${MIN_N}人建立常模 · ≥${MAX_N}人冻结 ·
-    <span style="color:rgba(255,255,255,.22)">常模维度：HR / FAR / RT-SD</span></p>`;
-
-  groups.forEach(g=>{
-    const n    = recs.filter(r=>r.ag===g).length;
-    const norm = cache[g];
-    const frozen= norm?._frozen;
-    html+=`<div style="margin-bottom:18px">
-      <div style="display:flex;align-items:center;gap:8px;margin-bottom:7px">
-        <span style="font-size:.8rem;font-weight:700;color:#7ec8e3">${g}岁</span>
-        <span style="font-size:.74rem;color:rgba(255,255,255,.32)">${n}人</span>
-        ${frozen?'<span class="tag tag-o">✅ 已冻结</span>':''}
-      </div>`;
-    if(!norm&&n<MIN_N){
-      const pct=Math.min(100,n/MIN_N*100);
-      html+=`<div style="height:4px;border-radius:2px;background:rgba(255,255,255,.07);margin-bottom:4px">
-        <div style="height:100%;width:${pct}%;border-radius:2px;background:linear-gradient(90deg,#1a6b9a,#7ec8e3)"></div></div>
-        <div style="font-size:.74rem;color:rgba(255,255,255,.28)">${n} / ${MIN_N} 人，常模积累中</div>`;
-    } else if(norm){
-      const defs=[{k:'HR',l:'命中率均值'},{k:'FAR',l:'虚报率均值'},{k:'rtSD',l:'RT-SD均值(ms)'}];
+function clearAll(){if(!confirm('确认清空所有数据？此操作不可撤销。'))return;lsDel(SK);lsDel(NK);renderAdmin();}
+function dlText(text,fname){
+  const isSafari=/^((?!chrome|android).)*safari/i.test(navigator.userAgent);
+  const isFile=location.protocol==='file:';
+  if(!isSafari&&!isFile){
+    try{
+      const blob=new Blob([text],{type:'text/plain;charset=utf-8'});
+      const url=URL.createObjectURL(blob);
+      const a=document.createElement('a');
+      a.href=url;a.download=fname;document.body.appendChild(a);a.click();document.body.removeChild(a);
+      setTimeout(()=>URL.revokeObjectURL(url),1000);return;
+    }catch(e){}
+  }
+  const ov=document.createElement('div');
+  ov.style.cssText='position:fixed;inset:0;background:rgba(0,0,0,.75);z-index:9999;display:flex;align-items:center;justify-content:center;padding:20px';
+  const box=document.createElement('div');
+  box.style.cssText='background:#0f2540;border:1px solid #7ec8e3;border-radius:14px;padding:22px;width:100%;max-width:580px';
+  box.innerHTML=`<p style="color:#7ec8e3;font-weight:800;margin-bottom:4px">📋 ${fname}</p><p style="color:rgba(255,255,255,.45);font-size:.78rem;margin-bottom:12px">请点击「复制全部」后粘贴保存。</p>`;
+  const ta=document.createElement('textarea');
+  ta.value=text;ta.readOnly=true;
+  ta.style.cssText='width:100%;height:180px;background:#0d1b2a;color:#fff;border:1px solid rgba(255,255,255,.2);border-radius:8px;padding:10px;font-size:11px;font-family:monospace;resize:none;display:block';
+  const br=document.createElement('div');br.style.cssText='display:flex;gap:10px;margin-top:12px';
+  const cb=document.createElement('button');cb.textContent='📋 复制全部';cb.className='btn btn-y';cb.style.flex='1';
+  cb.onclick=()=>{navigator.clipboard.writeText(text).then(()=>{cb.textContent='✅ 已复制！';setTimeout(()=>{cb.textContent='📋 复制全部';},2000);}).catch(()=>{ta.select();document.execCommand('copy');cb.textContent='✅ 已复制！';});};
+  const cl=document.createElement('button');cl.textContent='关闭';cl.className='btn btn-s';cl.onclick=()=>document.body.removeChild(ov);
+  br.appendChild(cb);br.appendChild(cl);box.appendChild(ta);box.appendChild(br);ov.appendChild(box);document.body.appendChild(ov);ta.select();
+}
+function renderAdmin(){
+  const recs=loadRecs(),cache=loadNorm();
+  let html=`<p style="color:rgba(255,255,255,.38);font-size:.78rem;margin-bottom:12px">共<strong style="color:#7ec8e3">${recs.length}</strong>条记录 · ≥${MIN_N}人建立常模 · ≥${MAX_N}人冻结</p>`;
+  ['6-7','8-9','10-11','12+'].forEach(g=>{
+    const n=recs.filter(r=>r.ag===g).length,norm=cache[g],frozen=norm?._frozen;
+    html+=`<div style="margin-bottom:18px"><div style="display:flex;align-items:center;gap:8px;margin-bottom:7px"><span style="font-size:.8rem;font-weight:700;color:#7ec8e3">${g}岁</span><span style="font-size:.74rem;color:rgba(255,255,255,.32)">${n}人</span>${frozen?'<span class="tag tag-o">✅ 已冻结</span>':''}</div>`;
+    if(!norm&&n<MIN_N){const pct=Math.min(100,n/MIN_N*100);html+=`<div style="height:4px;border-radius:2px;background:rgba(255,255,255,.07);margin-bottom:4px"><div style="height:100%;width:${pct}%;border-radius:2px;background:linear-gradient(90deg,#1a6b9a,#7ec8e3)"></div></div><div style="font-size:.74rem;color:rgba(255,255,255,.28)">${n}/${MIN_N}人，积累中</div>`;}
+    else if(norm){
       html+=`<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px">`;
-      html+=defs.map(({k,l})=>{
+      [{k:'HR',l:'命中率均值'},{k:'FAR',l:'虚报率均值'},{k:'rtSD',l:'RT-SD均值(ms)'}].forEach(({k,l})=>{
         const e=norm[k];
-        return e
-          ?`<div class="nb"><div class="nbl">${l}</div><div class="nbv">${Math.round(e.mean*1000)/1000}</div><div class="nbs">±${Math.round(e.sd*1000)/1000} · n=${e.n}</div></div>`
-          :`<div class="nb"><div class="nbl">${l}</div><div style="color:rgba(255,255,255,.25);font-size:.72rem">不足</div></div>`;
-      }).join('');
+        html+=e?`<div class="nb"><div class="nbl">${l}</div><div class="nbv">${Math.round(e.mean*1000)/1000}</div><div class="nbs">±${Math.round(e.sd*1000)/1000}·n=${e.n}</div></div>`:`<div class="nb"><div class="nbl">${l}</div><div style="color:rgba(255,255,255,.25);font-size:.72rem">不足</div></div>`;
+      });
       html+=`</div>`;
     }
     html+=`</div>`;
   });
   document.getElementById('norm-area').innerHTML=html;
-
-  // 个案记录：展示VAQ/VRCQ
   document.getElementById('rec-body').innerHTML=[...recs].reverse().map(r=>{
-    const nm   = cache[r.ag];
-    const {VAQ,VRCQ} = calcQuotients({HR:r.HR,FAR:r.FAR,rtSD:r.rtSD}, nm);
-    const vaqF = flagQuotient(VAQ);
-    const vrcqF= flagQuotient(VRCQ);
-    const anyF = vaqF!=='ok'||vrcqF!=='ok';
-    const tag  = anyF
-      ? `<span class="tag tag-f">⚠ 待补充</span>`
-      : nm ? `<span class="tag tag-o">✅ 正常</span>` : `<span class="tag tag-n">积累中</span>`;
-    const qCol = q => q===null?'#7ec8e3':flagQuotient(q)==='ok'?'#06d6a0':'#ffd166';
-    return `<tr>
-      <td>${r.id}</td><td>${r.age}</td><td>${'一二三四五六'[r.grade-1]}年级</td>
-      <td>${PAR[r.par]?.name||r.par}</td>
-      <td style="font-weight:800;color:${qCol(VAQ)}">${VAQ??'—'}</td>
-      <td style="font-weight:800;color:${qCol(VRCQ)}">${VRCQ??'—'}</td>
-      <td>${Math.round((r.HR??0)*1000)/10}%</td>
-      <td>${r.omR}</td><td>${r.comR}</td>
-      <td>${tag}</td><td>${r.date}</td></tr>`;
+    const nm=cache[r.ag];
+    const{VAQ,VRCQ}=calcQuotients({HR:r.HR,FAR:r.FAR,rtSD:r.rtSD},nm);
+    const vaqF=flagQuotient(VAQ),vrcqF=flagQuotient(VRCQ);
+    const anyF=vaqF!=='ok'||vrcqF!=='ok';
+    const tag=anyF?`<span class="tag tag-f">⚠ 待补充</span>`:nm?`<span class="tag tag-o">✅ 正常</span>`:`<span class="tag tag-n">积累中</span>`;
+    const qCol=q=>q===null?'#7ec8e3':flagQuotient(q)==='ok'?'#06d6a0':'#ffd166';
+    return`<tr><td>${r.id}</td><td>${r.age}</td><td>${'一二三四五六'[r.grade-1]}年级</td><td>${PAR[r.par]?.name||r.par}</td><td style="font-weight:800;color:${qCol(VAQ)}">${VAQ??'—'}</td><td style="font-weight:800;color:${qCol(VRCQ)}">${VRCQ??'—'}</td><td>${Math.round((r.HR??0)*1000)/10}%</td><td>${r.omR}</td><td>${r.comR}</td><td>${tag}</td><td>${r.date}</td></tr>`;
   }).join('');
 }
-
-// ══ 工具 ══════════════════════════════════════════════════════════
-function go(id){
-  document.querySelectorAll('.screen').forEach(s=>{
-    s.classList.toggle('active', s.id===id);
-  });
-  if(id==='admin-screen') renderAdmin();
-}
-
-function switchTab(id,btn){
-  ['t-norm','t-records','t-export'].forEach(t=>{
-    document.getElementById(t).classList.toggle('hidden',t!==id);
-  });
-  document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
-  btn.classList.add('active');
-}
-
-// 背景星星
-(function(){
-  const bg=document.getElementById('bg');
-  for(let i=0;i<50;i++){
-    const s=document.createElement('div');
-    s.className='star';
-    const sz=1+Math.random()*2;
-    s.style.cssText=`width:${sz}px;height:${sz}px;left:${Math.random()*100}%;top:${Math.random()*100}%;animation-duration:${2+Math.random()*4}s;animation-delay:${Math.random()*5}s`;
-    bg.appendChild(s);
-  }
-})();
+function go(id){document.querySelectorAll('.screen').forEach(s=>{s.classList.toggle('active',s.id===id);});if(id==='admin-screen')renderAdmin();}
+function switchTab(id,btn){['t-norm','t-records','t-export'].forEach(t=>{document.getElementById(t).classList.toggle('hidden',t!==id);});document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));btn.classList.add('active');}
+(function(){const bg=document.getElementById('bg');for(let i=0;i<50;i++){const s=document.createElement('div');s.className='star';const sz=1+Math.random()*2;s.style.cssText=`width:${sz}px;height:${sz}px;left:${Math.random()*100}%;top:${Math.random()*100}%;animation-duration:${2+Math.random()*4}s;animation-delay:${Math.random()*5}s`;bg.appendChild(s);}})();
 </script>
 </body>
 </html>
