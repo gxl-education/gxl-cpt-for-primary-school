@@ -210,8 +210,8 @@ function monthsToAgeStr(mo){const y=Math.floor(mo/12),m=mo%12;return m>0?`${y}�
 function lsGet(k){try{return localStorage.getItem(k);}catch(e){return null;}}
 function lsSet(k,v){try{localStorage.setItem(k,v);}catch(e){}}
 function lsDel(k){try{localStorage.removeItem(k);}catch(e){}}
-function loadRecs(){try{return JSON.parse(lsGet(SK)||'[]');}catch(e){return[];}}
-function saveRec(r){const a=loadRecs();a.push(r);lsSet(SK,JSON.stringify(a));recomputeNorm(a);}
+async function loadRecs(){try{const r=await fetch('/api/get-records');const d=await r.json();return Array.isArray(d)?d:[];}catch(e){return[];}}
+async function saveRec(r){try{await fetch('/api/save-record',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(r)});}catch(e){console.error('保存失败',e);}const a=await loadRecs();recomputeNorm(a);}
 function loadNorm(){try{return JSON.parse(lsGet(NK)||'{}');}catch(e){return{};}}
 
 const MK_NORM=['HR','rtSD','FAR'];
@@ -539,11 +539,11 @@ function computeMetrics(resps){
   const decayFlag=segs[0]!==null&&segs[2]!==null&&(segs[2]-segs[0])>15;
   return{HR:Math.round(HR*1000)/1000,FAR:Math.round(FAR*1000)/1000,rtSD:rtSD?Math.round(rtSD):null,omR,comR,rtM:rtM?Math.round(rtM):null,dp:Math.round(dp*100)/100,persistence,segs,decayFlag,hits,miss,fa,nT:tgts.length,nNT:nTgts.length};
 }
-function finishTest(){
+async function finishTest(){
   const m=computeMetrics(S.resps);
   const{norm,label,fallback}=getNormForChild(S.mo,S.sex);
   const rec={id:S.id,grade:S.grade,sex:S.sex,mo:S.mo,ag:S.ag,par:S.par,birthY:S.birthY,birthM:S.birthM,birthD:S.birthD,HR:m.HR,FAR:m.FAR,rtSD:m.rtSD,omR:m.omR,comR:m.comR,rtM:m.rtM,dp:m.dp,date:new Date().toLocaleDateString('zh-CN'),ts:Date.now()};
-  saveRec(rec);
+  await saveRec(rec);
   const{VAQ,VRCQ}=calcQuotients(m,norm);
   S.lastM=m;S.lastVAQ=VAQ;S.lastVRCQ=VRCQ;
   const vaqAge=calcAttentionAge(VAQ,S.sex);
@@ -572,8 +572,8 @@ function resetAll(){
   t+=`\n注：仅供研究参考，不作临床诊断依据。`;
   dlText(t,`IVA-CPT_${r.id}_${r.date.replace(/\//g,'')}.txt`);
 }
-function exportAll(){
-  const recs=loadRecs();
+async function exportAll(){
+  const recs=await loadRecs();
   if(!recs.length){alert('暂无数据');return;}
   const hdr=['编号','月龄','年龄','性别','年级','月龄组','范式','VAQ','VRCQ','命中率HR','虚报率FAR','RT均值ms','RT标准差ms','d\'','漏报率%','虚报率%','日期'];
   const rows=recs.map(r=>{
@@ -602,9 +602,9 @@ function importCSV(inp){
   reader.readAsText(file,'utf-8');
 }
 function clearAll(){if(!confirm('确认清空所有数据？此操作不可撤销。'))return;lsDel(SK);lsDel(NK);renderAdmin();}
-function deleteRec(ts){
+async function deleteRec(ts){
   if(!confirm('确认删除这条记录？'))return;
-  const recs=loadRecs().filter(r=>r.ts!==ts);
+  const recs=(await loadRecs()).filter(r=>r.ts!==ts);
   lsSet(SK,JSON.stringify(recs));recomputeNorm(recs);renderAdmin();
 }
 function dlText(text,fname){
@@ -633,8 +633,8 @@ function dlText(text,fname){
   const cl=document.createElement('button');cl.textContent='关闭';cl.className='btn btn-s';cl.onclick=()=>document.body.removeChild(ov);
   br.appendChild(cb);br.appendChild(cl);box.appendChild(ta);box.appendChild(br);ov.appendChild(box);document.body.appendChild(ov);ta.select();
 }
-function renderAdmin(){
-  const recs=loadRecs(),cache=loadNorm();
+async function renderAdmin(){
+  const recs=await loadRecs(),cache=loadNorm();
   const groups=[...new Set(recs.map(r=>r.ag||monthAgeGroup(r.mo||0)))].sort();
   let html=`<p style="color:rgba(255,255,255,.38);font-size:.78rem;margin-bottom:12px">共<strong style="color:#7ec8e3">${recs.length}</strong>条记录 · 每6个月龄组×性别 ≥${MIN_N}人建立常模 · ≥${MAX_N}人冻结</p>`;
   groups.forEach(g=>{
