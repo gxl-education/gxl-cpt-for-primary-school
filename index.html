@@ -148,7 +148,7 @@ h2 { font-size:1.6rem; font-weight:800; color:#7ec8e3; margin-bottom:14px; }
     <div id="t-records" class="hidden">
       <div class="scroll">
         <table class="tbl">
-          <thead><tr><th>编号</th><th>年龄</th><th>年级</th><th>范式</th><th>VAQ</th><th>VRCQ</th><th>命中率</th><th>漏报%</th><th>虚报%</th><th>状态</th><th>日期</th></tr></thead>
+          <thead><tr><th>编号</th><th>年龄</th><th>年级</th><th>范式</th><th>VAQ</th><th>VRCQ</th><th>命中率</th><th>漏报%</th><th>虚报%</th><th>状态</th><th>日期</th><th>操作</th></tr></thead>
           <tbody id="rec-body"></tbody>
         </table>
       </div>
@@ -555,7 +555,14 @@ function dlText(text,fname){
   const cl=document.createElement('button');cl.textContent='关闭';cl.className='btn btn-s';cl.onclick=()=>document.body.removeChild(ov);
   br.appendChild(cb);br.appendChild(cl);box.appendChild(ta);box.appendChild(br);ov.appendChild(box);document.body.appendChild(ov);ta.select();
 }
-function renderAdmin(){
+function deleteRec(ts){
+  if(!confirm('确认删除这条记录？')) return;
+  const recs = loadRecs().filter(r => r.ts !== ts);
+  lsSet(SK, JSON.stringify(recs));
+  recomputeNorm(recs);
+  renderAdmin();
+}
+  function renderAdmin(){
   const recs=loadRecs(),cache=loadNorm();
   let html=`<p style="color:rgba(255,255,255,.38);font-size:.78rem;margin-bottom:12px">共<strong style="color:#7ec8e3">${recs.length}</strong>条记录 · ≥${MIN_N}人建立常模 · ≥${MAX_N}人冻结</p>`;
   ['6-7','8-9','10-11','12+'].forEach(g=>{
@@ -580,7 +587,9 @@ function renderAdmin(){
     const anyF=vaqF!=='ok'||vrcqF!=='ok';
     const tag=anyF?`<span class="tag tag-f">⚠ 待补充</span>`:nm?`<span class="tag tag-o">✅ 正常</span>`:`<span class="tag tag-n">积累中</span>`;
     const qCol=q=>q===null?'#7ec8e3':flagQuotient(q)==='ok'?'#06d6a0':'#ffd166';
-    return`<tr><td>${r.id}</td><td>${r.age}</td><td>${'一二三四五六'[r.grade-1]}年级</td><td>${PAR[r.par]?.name||r.par}</td><td style="font-weight:800;color:${qCol(VAQ)}">${VAQ??'—'}</td><td style="font-weight:800;color:${qCol(VRCQ)}">${VRCQ??'—'}</td><td>${Math.round((r.HR??0)*1000)/10}%</td><td>${r.omR}</td><td>${r.comR}</td><td>${tag}</td><td>${r.date}</td></tr>`;
+    return`<tr><td>${r.id}</td><td>${r.age}</td><td>${'一二三四五六'[r.grade-1]}年级</td><td>${PAR[r.par]?.name||r.par}</td><td style="font-weight:800;color:${qCol(VAQ)}">${VAQ??'—'}</td><td style="font-weight:800;color:${qCol(VRCQ)}">${VRCQ??'—'}</td><td>${Math.round((r.HR??0)*1000)/10}%</td><td>${r.omR}</td><td>${r.comR}</td><td>${tag}</td><td>${r.date}</td>
+<td><button onclick="deleteRec(${r.ts})" style="background:rgba(224,95,95,.15);border:1px solid rgba(224,95,95,.3);color:#e05f5f;border-radius:6px;padding:3px 10px;cursor:pointer;font-size:.72rem;font-family:inherit">删除</button></td>
+</tr>`;
   }).join('');
 }
 function go(id){document.querySelectorAll('.screen').forEach(s=>{s.classList.toggle('active',s.id===id);});if(id==='admin-screen')renderAdmin();}
