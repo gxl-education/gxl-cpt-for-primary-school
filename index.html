@@ -6,111 +6,50 @@
 <title>儿童持续注意力测试 CPT</title>
 <style>
 * { margin:0; padding:0; box-sizing:border-box; }
-body {
-  font-family: 'Segoe UI', Arial, sans-serif;
-  background: #0d1b2a;
-  color: #fff;
-  min-height: 100vh;
-  overflow: hidden;
-  user-select: none;
-}
-#bg { position:fixed; inset:0; z-index:0;
-  background: linear-gradient(160deg,#0d1b2a 0%,#0f2540 60%,#0a2a1a 100%); }
-.star { position:absolute; border-radius:50%; background:#fff;
-  animation: twinkle ease-in-out infinite; }
+body { font-family:'Segoe UI',Arial,sans-serif; background:#0d1b2a; color:#fff; min-height:100vh; overflow:hidden; user-select:none; }
+#bg { position:fixed; inset:0; z-index:0; background:linear-gradient(160deg,#0d1b2a 0%,#0f2540 60%,#0a2a1a 100%); }
+.star { position:absolute; border-radius:50%; background:#fff; animation:twinkle ease-in-out infinite; }
 @keyframes twinkle { 0%,100%{opacity:.1} 50%{opacity:.6} }
-.screen {
-  position: fixed; inset: 0; z-index: 10;
-  flex-direction: column; align-items: center; justify-content: center;
-  padding: 24px; display: none;
-}
-.screen.active { display: flex; }
-.card {
-  background: rgba(255,255,255,0.08);
-  border: 1px solid rgba(255,255,255,0.14);
-  border-radius: 24px; padding: 36px 44px;
-  max-width: 660px; width: 100%;
-  box-shadow: 0 20px 60px rgba(0,0,0,0.5);
-}
+.screen { position:fixed; inset:0; z-index:10; flex-direction:column; align-items:center; justify-content:center; padding:24px; display:none; }
+.screen.active { display:flex; }
+.card { background:rgba(255,255,255,0.08); border:1px solid rgba(255,255,255,0.14); border-radius:24px; padding:36px 44px; max-width:660px; width:100%; box-shadow:0 20px 60px rgba(0,0,0,0.5); }
 h1 { font-size:2.2rem; font-weight:900; color:#ffd166; margin-bottom:6px; }
 h2 { font-size:1.6rem; font-weight:800; color:#7ec8e3; margin-bottom:14px; }
 .sub { color:#7ec8e3; opacity:.65; font-size:.9rem; }
-.btn {
-  display: inline-block; padding: 12px 30px; border-radius: 50px;
-  border: none; cursor: pointer; font-size: 1rem; font-weight: 700;
-  transition: transform .12s, box-shadow .12s; font-family: inherit;
-}
-.btn:hover  { transform: translateY(-2px); box-shadow: 0 8px 20px rgba(0,0,0,.3); }
-.btn:active { transform: none; }
-.btn-y  { background: #ffd166; color: #1a1a2e; }
-.btn-g  { background: #06d6a0; color: #0d1b2a; }
-.btn-s  { background: rgba(255,255,255,.1); color:#fff; border:1px solid rgba(255,255,255,.2); }
-.btn-r  { background: rgba(224,95,95,.15); color:#e05f5f; border:1px solid rgba(224,95,95,.3); }
+.btn { display:inline-block; padding:12px 30px; border-radius:50px; border:none; cursor:pointer; font-size:1rem; font-weight:700; transition:transform .12s,box-shadow .12s; font-family:inherit; }
+.btn:hover { transform:translateY(-2px); box-shadow:0 8px 20px rgba(0,0,0,.3); }
+.btn:active { transform:none; }
+.btn-y { background:#ffd166; color:#1a1a2e; }
+.btn-g { background:#06d6a0; color:#0d1b2a; }
+.btn-s { background:rgba(255,255,255,.1); color:#fff; border:1px solid rgba(255,255,255,.2); }
+.btn-r { background:rgba(224,95,95,.15); color:#e05f5f; border:1px solid rgba(224,95,95,.3); }
 .btn-row { display:flex; gap:12px; flex-wrap:wrap; margin-top:20px; }
-.field { margin: 11px 0; }
+.field { margin:11px 0; }
 .field label { display:block; font-size:.85rem; color:#7ec8e3; font-weight:700; margin-bottom:5px; }
-.field input, .field select {
-  width:100%; padding:10px 14px;
-  background: rgba(255,255,255,.08); border: 1px solid rgba(255,255,255,.18);
-  border-radius: 10px; color:#fff; font-family:inherit; font-size:.95rem; outline:none;
-}
-.field input:focus, .field select:focus { border-color:#7ec8e3; }
+.field input,.field select { width:100%; padding:10px 14px; background:rgba(255,255,255,.08); border:1px solid rgba(255,255,255,.18); border-radius:10px; color:#fff; font-family:inherit; font-size:.95rem; outline:none; }
+.field input:focus,.field select:focus { border-color:#7ec8e3; }
 .field select option { background:#0f2540; }
-.demo {
-  background: rgba(255,255,255,.05); border: 1px solid rgba(255,255,255,.1);
-  border-radius: 14px; padding: 16px 20px; margin: 10px 0; text-align: center;
-}
-.demo-stim { font-size: 3.5rem; margin: 6px 0; line-height: 1.2; }
-.demo-desc { font-size: .82rem; color: rgba(255,255,255,.5); }
-#test-screen { background: #0a0f1a; }
-.hud {
-  position: fixed; top:0; left:0; right:0;
-  display: flex; justify-content:space-between; align-items:center;
-  padding: 14px 28px; z-index: 30; pointer-events: none;
-}
+.demo { background:rgba(255,255,255,.05); border:1px solid rgba(255,255,255,.1); border-radius:14px; padding:16px 20px; margin:10px 0; text-align:center; }
+.demo-stim { font-size:3.5rem; margin:6px 0; line-height:1.2; }
+.demo-desc { font-size:.82rem; color:rgba(255,255,255,.5); }
+#test-screen { background:#0a0f1a; }
+.hud { position:fixed; top:0; left:0; right:0; display:flex; justify-content:space-between; align-items:center; padding:14px 28px; z-index:30; pointer-events:none; }
 .hud-txt { font-size:.75rem; color:rgba(255,255,255,.25); font-weight:700; }
 .prog-bar { width:140px; height:4px; border-radius:2px; background:rgba(255,255,255,.07); overflow:hidden; }
 .prog-fill { height:100%; border-radius:2px; background:linear-gradient(90deg,#7ec8e3,#06d6a0); transition:width .4s; }
-#stim-wrap {
-  position: fixed; inset:0; z-index:20;
-  display: flex; flex-direction:column; align-items:center; justify-content:center;
-}
-#fixation { font-size: 2.8rem; color: rgba(255,255,255,.3); }
-#stim-el { font-size: 9rem; font-weight: 900; color: #fff; line-height: 1; display: none; }
-#ax-cue {
-  position: fixed; top: calc(50% - 130px); left: 50%; transform: translateX(-50%);
-  font-size: .82rem; font-weight:700; letter-spacing:1px;
-  color: rgba(255,255,255,.2); z-index: 25; display: none;
-}
-.ptag {
-  position: fixed; bottom:24px; left:50%; transform:translateX(-50%);
-  font-size:.7rem; color:rgba(255,255,255,.18); letter-spacing:2px; z-index:25;
-}
+#stim-wrap { position:fixed; inset:0; z-index:20; display:flex; flex-direction:column; align-items:center; justify-content:center; }
+#fixation { font-size:2.8rem; color:rgba(255,255,255,.3); }
+#stim-el { font-size:9rem; font-weight:900; color:#fff; line-height:1; display:none; }
+#ax-cue { position:fixed; top:calc(50% - 130px); left:50%; transform:translateX(-50%); font-size:.82rem; font-weight:700; letter-spacing:1px; color:rgba(255,255,255,.2); z-index:25; display:none; }
+.ptag { position:fixed; bottom:24px; left:50%; transform:translateX(-50%); font-size:.7rem; color:rgba(255,255,255,.18); letter-spacing:2px; z-index:25; }
 @keyframes fG { 0%,100%{background:#0a0f1a} 50%{background:rgba(6,214,160,.12)} }
 @keyframes fR { 0%,100%{background:#0a0f1a} 50%{background:rgba(224,95,95,.15)} }
-.fl-g { animation: fG .22s; } .fl-r { animation: fR .22s; }
-.metric-grid { display:grid; grid-template-columns:1fr 1fr; gap:12px; margin:16px 0; }
-.mc { background: rgba(255,255,255,.06); border: 1px solid rgba(255,255,255,.1); border-radius:13px; padding:15px 17px; }
-.mc-lbl { font-size:.72rem; color:#7ec8e3; font-weight:700; margin-bottom:3px; }
-.mc-val { font-size:1.8rem; font-weight:900; }
-.mc-norm{ font-size:.7rem; color:rgba(255,255,255,.3); margin-top:3px; }
-.mc-flag{ font-size:.7rem; font-weight:700; margin-top:3px; }
-.badge { text-align:center; padding:15px 18px; border-radius:14px; margin-bottom:14px; font-weight:800; font-size:.95rem; }
-.b-ok   { background:rgba(6,214,160,.1);   border:1px solid rgba(6,214,160,.3);   color:#06d6a0; }
-.b-flag { background:rgba(224,95,95,.1);   border:1px solid rgba(224,95,95,.3);   color:#e05f5f; }
-.b-norm { background:rgba(255,209,102,.08);border:1px solid rgba(255,209,102,.25);color:#ffd166; }
-.note { background:rgba(255,255,255,.04); border-radius:9px; padding:11px 15px;
-  font-size:.76rem; color:rgba(255,255,255,.38); line-height:1.7; margin-top:10px; }
+.fl-g { animation:fG .22s; } .fl-r { animation:fR .22s; }
 .tab-bar { display:flex; gap:7px; margin-bottom:16px; }
-.tab-btn {
-  padding:6px 14px; border-radius:7px; border:none; cursor:pointer;
-  font-size:.8rem; font-weight:700; font-family:inherit;
-  background:rgba(255,255,255,.07); color:rgba(255,255,255,.45); transition:all .12s;
-}
+.tab-btn { padding:6px 14px; border-radius:7px; border:none; cursor:pointer; font-size:.8rem; font-weight:700; font-family:inherit; background:rgba(255,255,255,.07); color:rgba(255,255,255,.45); transition:all .12s; }
 .tab-btn.active { background:#1a6b9a; color:#fff; }
 .tbl { width:100%; border-collapse:collapse; font-size:.78rem; }
-.tbl th { background:rgba(255,255,255,.07); padding:8px 10px; text-align:left;
-  color:#7ec8e3; font-weight:700; border-bottom:1px solid rgba(255,255,255,.09); }
+.tbl th { background:rgba(255,255,255,.07); padding:8px 10px; text-align:left; color:#7ec8e3; font-weight:700; border-bottom:1px solid rgba(255,255,255,.09); }
 .tbl td { padding:7px 10px; border-bottom:1px solid rgba(255,255,255,.04); color:rgba(255,255,255,.72); }
 .tbl tr:hover td { background:rgba(255,255,255,.03); }
 .scroll { max-height:260px; overflow-y:auto; }
@@ -118,11 +57,11 @@ h2 { font-size:1.6rem; font-weight:800; color:#7ec8e3; margin-bottom:14px; }
 .scroll::-webkit-scrollbar-thumb { background:rgba(255,255,255,.12); border-radius:2px; }
 .ng { display:grid; grid-template-columns:repeat(3,1fr); gap:8px; margin:8px 0; }
 .nb { background:rgba(255,255,255,.05); border-radius:9px; padding:10px; text-align:center; }
-.nbl{ font-size:.68rem; color:#7ec8e3; } .nbv{ font-size:1.1rem; font-weight:800; color:#ffd166; } .nbs{ font-size:.65rem; color:rgba(255,255,255,.3); }
+.nbl { font-size:.68rem; color:#7ec8e3; } .nbv { font-size:1.1rem; font-weight:800; color:#ffd166; } .nbs { font-size:.65rem; color:rgba(255,255,255,.3); }
 .tag { display:inline-block; padding:2px 6px; border-radius:5px; font-size:.68rem; font-weight:700; }
 .tag-f { background:rgba(255,209,102,.18); color:#ffd166; }
-.tag-o { background:rgba(6,214,160,.13);   color:#06d6a0; }
-.tag-n { background:rgba(126,200,227,.1);  color:#7ec8e3; }
+.tag-o { background:rgba(6,214,160,.13); color:#06d6a0; }
+.tag-n { background:rgba(126,200,227,.1); color:#7ec8e3; }
 .hidden { display:none !important; }
 </style>
 </head>
@@ -135,7 +74,7 @@ h2 { font-size:1.6rem; font-weight:800; color:#7ec8e3; margin-bottom:14px; }
     <p class="sub" style="margin-bottom:26px">儿童持续注意力测试（CPT）</p>
     <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap">
       <button class="btn btn-y" onclick="go('info-screen')">▶ 开始测试</button>
-      <button class="btn btn-s" onclick="go('admin-screen')">🔒 管理员</button>
+      <button class="btn btn-s" onclick="adminLogin()">🔒 管理员</button>
     </div>
     <p style="margin-top:18px;font-size:.72rem;color:rgba(255,255,255,.22)">测试时长 8–10 分钟 · 请在安静环境完成</p>
   </div>
@@ -143,8 +82,7 @@ h2 { font-size:1.6rem; font-weight:800; color:#7ec8e3; margin-bottom:14px; }
 <div class="screen" id="info-screen">
   <div class="card">
     <h2>👋 告诉我们你是谁</h2>
-    <div class="field"><label>学生编号（由老师告知）</label>
-      <input id="f-id" type="text" placeholder="例：1-03-12" maxlength="20"></div>
+    <div class="field"><label>学生编号（由老师告知）</label><input id="f-id" type="text" placeholder="例：1-03-12" maxlength="20"></div>
     <div class="field"><label>年级</label>
       <select id="f-grade" onchange="autoAge()">
         <option value="">请选择</option>
@@ -152,8 +90,7 @@ h2 { font-size:1.6rem; font-weight:800; color:#7ec8e3; margin-bottom:14px; }
         <option value="3">三年级</option><option value="4">四年级</option>
         <option value="5">五年级</option><option value="6">六年级</option>
       </select></div>
-    <div class="field"><label>年龄（岁）</label>
-      <input id="f-age" type="number" min="6" max="14" placeholder="例：8"></div>
+    <div class="field"><label>年龄（岁）</label><input id="f-age" type="number" min="6" max="14" placeholder="例：8"></div>
     <div class="btn-row">
       <button class="btn btn-s" onclick="go('welcome-screen')">← 返回</button>
       <button class="btn btn-y" onclick="toInstructions()">下一步 →</button>
@@ -177,10 +114,7 @@ h2 { font-size:1.6rem; font-weight:800; color:#7ec8e3; margin-bottom:14px; }
     <span class="hud-txt" id="h-cnt"></span>
   </div>
   <div id="ax-cue"></div>
-  <div id="stim-wrap">
-    <div id="fixation">+</div>
-    <div id="stim-el"></div>
-  </div>
+  <div id="stim-wrap"><div id="fixation">+</div><div id="stim-el"></div></div>
   <div class="ptag" id="ptag"></div>
 </div>
 <div class="screen" id="break-screen">
@@ -192,16 +126,11 @@ h2 { font-size:1.6rem; font-weight:800; color:#7ec8e3; margin-bottom:14px; }
   </div>
 </div>
 <div class="screen" id="result-screen">
-  <div class="card" style="max-width:720px">
-    <h2 style="text-align:center;margin-bottom:4px">✅ 测试完成！</h2>
-    <p style="text-align:center;font-size:.82rem;color:rgba(255,255,255,.38);margin-bottom:14px" id="r-sub"></p>
-    <div class="badge" id="r-badge"></div>
-    <div class="metric-grid" id="r-metrics"></div>
-    <div class="note" id="r-note"></div>
-    <div class="btn-row" style="justify-content:center;margin-top:18px">
-      <button class="btn btn-s" onclick="go('welcome-screen');resetAll()">🏠 首页</button>
-      <button class="btn btn-y" onclick="doExport()">⬇ 导出结果</button>
-    </div>
+  <div class="card" style="text-align:center;max-width:500px">
+    <div style="font-size:5rem;margin-bottom:16px">🎉</div>
+    <h1 style="font-size:2rem;margin-bottom:12px">测试完成！</h1>
+    <p style="font-size:1.2rem;color:#7ec8e3;line-height:1.8;margin-bottom:32px">感谢你的坚持！<br>你真的很棒！</p>
+    <button class="btn btn-g" style="font-size:1.1rem;padding:14px 40px" onclick="go('welcome-screen');resetAll()">🏠 返回首页</button>
   </div>
 </div>
 <div class="screen" id="admin-screen">
@@ -219,11 +148,7 @@ h2 { font-size:1.6rem; font-weight:800; color:#7ec8e3; margin-bottom:14px; }
     <div id="t-records" class="hidden">
       <div class="scroll">
         <table class="tbl">
-          <thead><tr>
-            <th>编号</th><th>年龄</th><th>年级</th><th>范式</th>
-            <th>VAQ</th><th>VRCQ</th><th>命中率</th>
-            <th>漏报%</th><th>虚报%</th><th>状态</th><th>日期</th>
-          </tr></thead>
+          <thead><tr><th>编号</th><th>年龄</th><th>年级</th><th>范式</th><th>VAQ</th><th>VRCQ</th><th>命中率</th><th>漏报%</th><th>虚报%</th><th>状态</th><th>日期</th></tr></thead>
           <tbody id="rec-body"></tbody>
         </table>
       </div>
@@ -489,49 +414,42 @@ function computeMetrics(resps){
   const decayFlag=segs[0]!==null&&segs[2]!==null&&(segs[2]-segs[0])>15;
   return{HR:Math.round(HR*1000)/1000,FAR:Math.round(FAR*1000)/1000,rtSD:rtSD?Math.round(rtSD):null,omR,comR,rtM:rtM?Math.round(rtM):null,dp:Math.round(dp*100)/100,persistence,segs,decayFlag,hits,miss,fa,nT:tgts.length,nNT:nTgts.length};
 }
-  function finishTest(){
+function finishTest(){
   const m=computeMetrics(S.resps);
   const norm=getNorm(S.ag);
   const rec={id:S.id,grade:S.grade,age:S.age,ag:S.ag,par:S.par,HR:m.HR,FAR:m.FAR,rtSD:m.rtSD,omR:m.omR,comR:m.comR,rtM:m.rtM,dp:m.dp,date:new Date().toLocaleDateString('zh-CN'),ts:Date.now()};
   saveRec(rec);
   const{VAQ,VRCQ}=calcQuotients(m,norm);
-  const normN=norm?._n||norm?.HR?.n||0;
-  const vaqFlag=flagQuotient(VAQ);
-  const vrcqFlag=flagQuotient(VRCQ);
-  const anyFlag=vaqFlag!=='ok'||vrcqFlag!=='ok'||m.decayFlag;
-  const flagColor={high:'#e05f5f',flag:'#ffd166',ok:'#06d6a0',n:'#7ec8e3'};
-  document.getElementById('r-sub').textContent=`${S.id} · ${S.age}岁 · ${'一二三四五六'[S.grade-1]}年级 · ${PAR[S.par].name}`;
-  const badge=document.getElementById('r-badge');
-  if(!norm){badge.className='badge b-norm';badge.textContent='⏳ 测试完成（常模积累中，需同组≥30人后才能计算商数）';}
-  else if(vaqFlag==='high'||vrcqFlag==='high'){badge.className='badge b-flag';badge.innerHTML='🔴 注意力商数显著偏低（<80），强烈建议补充评估';}
-  else if(anyFlag){badge.className='badge b-flag';badge.innerHTML='⚠️ 注意力商数偏低（<85），建议进行补充评估'+(m.decayFlag?'<br><small style="opacity:.75">（同时检测到持续注意力衰减）</small>':'');}
-  else{badge.className='badge b-ok';badge.textContent='✅ 视觉注意力商数和控制力商数均在正常范围（≥85）';}
-  const normStr=norm?`（基于${normN}人常模，均值=100，SD=15）`:'（常模积累中）';
-  document.getElementById('r-metrics').innerHTML=`
-    <div class="mc" style="grid-column:1/-1;display:flex;gap:16px;padding:20px 24px;background:rgba(255,255,255,.09)">
-      <div style="flex:1;text-align:center;border-right:1px solid rgba(255,255,255,.1);padding-right:16px">
-        <div class="mc-lbl" style="font-size:.82rem;margin-bottom:8px">视觉注意力商（VAQ）</div>
-        <div class="mc-val" style="font-size:3.2rem;color:${flagColor[vaqFlag]}">${VAQ??'—'}</div>
-        <div style="margin-top:6px">${vaqFlag==='high'?'<span style="color:#e05f5f;font-size:.8rem;font-weight:800">🔴 显著偏低 &lt;80</span>':vaqFlag==='flag'?'<span style="color:#ffd166;font-size:.8rem;font-weight:800">⚠ 偏低 &lt;85</span>':vaqFlag==='ok'?'<span style="color:#06d6a0;font-size:.8rem;font-weight:800">✅ 正常 ≥85</span>':'<span style="color:#7ec8e3;font-size:.8rem">待常模</span>'}</div>
-        <div style="font-size:.72rem;color:rgba(255,255,255,.35);margin-top:6px">命中率×0.6 + 反应时稳定性×0.4</div>
-      </div>
-      <div style="flex:1;text-align:center;padding-left:16px">
-        <div class="mc-lbl" style="font-size:.82rem;margin-bottom:8px">视觉控制力商（VRCQ）</div>
-        <div class="mc-val" style="font-size:3.2rem;color:${flagColor[vrcqFlag]}">${VRCQ??'—'}</div>
-        <div style="margin-top:6px">${vrcqFlag==='high'?'<span style="color:#e05f5f;font-size:.8rem;font-weight:800">🔴 显著偏低 &lt;80</span>':vrcqFlag==='flag'?'<span style="color:#ffd166;font-size:.8rem;font-weight:800">⚠ 偏低 &lt;85</span>':vrcqFlag==='ok'?'<span style="color:#06d6a0;font-size:.8rem;font-weight:800">✅ 正常 ≥85</span>':'<span style="color:#7ec8e3;font-size:.8rem">待常模</span>'}</div>
-        <div style="font-size:.72rem;color:rgba(255,255,255,.35);margin-top:6px">虚报抑制×0.7 + 命中率×0.3</div>
-      </div>
-    </div>
-    <div class="mc"><div class="mc-lbl">命中率（HR）</div><div class="mc-val" style="color:#7ec8e3">${Math.round(m.HR*1000)/10}%</div><div class="mc-norm">漏报率 ${m.omR}%</div></div>
-    <div class="mc"><div class="mc-lbl">虚报率（FAR）</div><div class="mc-val" style="color:#7ec8e3">${m.comR}%</div><div class="mc-norm">冲动控制指标</div></div>
-    <div class="mc"><div class="mc-lbl">反应时均值</div><div class="mc-val" style="color:#7ec8e3">${m.rtM??'—'}<span style="font-size:1rem">ms</span></div><div class="mc-norm">命中试次平均速度</div></div>
-    <div class="mc"><div class="mc-lbl">反应时标准差（RT-SD）</div><div class="mc-val" style="color:#7ec8e3">${m.rtSD??'—'}<span style="font-size:1rem">ms</span></div><div class="mc-norm">越小越稳定</div></div>
-    <div class="mc"><div class="mc-lbl">辨别力 d′</div><div class="mc-val" style="color:#7ec8e3">${m.dp}</div><div class="mc-norm">信号检测综合指标</div></div>
-    <div class="mc"><div class="mc-lbl">毅力指数</div><div class="mc-val" style="color:${m.persistence&&m.persistence<0.85?'#ffd166':'#7ec8e3'}">${m.persistence??'—'}</div><div class="mc-norm">≥0.85稳定，&lt;0.85提示衰减</div></div>
-    ${m.decayFlag?`<div class="mc" style="grid-column:1/-1"><div class="mc-lbl">持续注意力衰减</div><div class="mc-val" style="color:#ffd166;font-size:1.1rem">前段${m.segs[0]?.toFixed(0)}% → 中段${m.segs[1]?.toFixed(0)}% → 后段${m.segs[2]?.toFixed(0)}%</div><div class="mc-norm">漏报率随时间上升&gt;15%，提示持续注意维持困难</div><div class="mc-flag" style="color:#ffd166">⚠ 注意力衰减</div></div>`:''}`;
-  document.getElementById('r-note').innerHTML=`<b style="color:rgba(255,255,255,.5)">商数说明：</b>VAQ反映持续注意质量；VRCQ反映冲动抑制能力。均值100，SD15，低于85需关注，低于80为显著异常。${normStr}<br><b style="color:rgba(255,255,255,.5)">免责：</b>本结果仅供研究参考，不作临床诊断依据。`;
   S.lastRec=rec;S.lastM=m;S.lastVAQ=VAQ;S.lastVRCQ=VRCQ;
   go('result-screen');
+}
+  const ADMIN_PWD='cpt2024';
+function adminLogin(){
+  const ov=document.createElement('div');
+  ov.style.cssText='position:fixed;inset:0;background:rgba(0,0,0,.75);z-index:9999;display:flex;align-items:center;justify-content:center;padding:20px';
+  const box=document.createElement('div');
+  box.style.cssText='background:#0f2540;border:1px solid #7ec8e3;border-radius:16px;padding:28px;width:100%;max-width:360px;text-align:center';
+  box.innerHTML=`
+    <div style="font-size:2.5rem;margin-bottom:10px">🔐</div>
+    <h2 style="color:#7ec8e3;font-size:1.2rem;margin-bottom:18px">请输入管理员密码</h2>
+    <input id="admin-pwd-input" type="password" placeholder="密码"
+      style="width:100%;padding:11px 14px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.25);border-radius:10px;color:#fff;font-size:1rem;outline:none;text-align:center;letter-spacing:4px;margin-bottom:16px">
+    <div style="display:flex;gap:10px;justify-content:center">
+      <button class="btn btn-s" style="flex:1" id="admin-cancel-btn">取消</button>
+      <button class="btn btn-y" style="flex:1" id="admin-ok-btn">确认</button>
+    </div>
+    <p id="admin-err" style="color:#e05f5f;font-size:.8rem;margin-top:10px;display:none">密码错误，请重试</p>`;
+  ov.appendChild(box);document.body.appendChild(ov);
+  const input=document.getElementById('admin-pwd-input');
+  const errEl=document.getElementById('admin-err');
+  input.focus();
+  function tryLogin(){
+    if(input.value===ADMIN_PWD){document.body.removeChild(ov);go('admin-screen');}
+    else{errEl.style.display='block';input.value='';input.focus();}
+  }
+  document.getElementById('admin-ok-btn').onclick=tryLogin;
+  document.getElementById('admin-cancel-btn').onclick=()=>document.body.removeChild(ov);
+  input.addEventListener('keydown',e=>{if(e.key==='Enter')tryLogin();});
 }
 function resetAll(){S={};document.getElementById('f-id').value='';document.getElementById('f-grade').value='';document.getElementById('f-age').value='';}
 function doExport(){
