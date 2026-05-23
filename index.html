@@ -404,8 +404,13 @@ function nextTrial(){
         <span style="font-size:.88rem;color:#ffd166;font-weight:700">⚠ 正式测试中不会再有对错提示</span><br>
         <span style="font-size:.82rem;color:rgba(255,255,255,.38)">尽力作答，准备好就继续！</span>`;
       go('break-screen');
-    } else {
-      S.done=true;finishTest();
+} else {
+      S.done=true;
+      clearTimeout(TM);
+      waiting=false;
+      document.getElementById('stim-el').style.display='none';
+      document.getElementById('fixation').style.display='block';
+      setTimeout(()=>finishTest(), 100);
     }
     return;
   }
@@ -443,14 +448,18 @@ function nextTrial(){
       else{advanceTrial();}
       return;
     }
-    if(waiting){
+if(waiting){
       waiting=false;
       if(!S.isPrac)logResp(t,false,null);
       else if(t.tp==='t')showPracFeedback(false,S.par);
     }
-    advanceTrial();
+    if(!S.done) advanceTrial();
   }
-  function advanceTrial(){S.prev=t.s;S.idx++;TM=setTimeout(nextTrial,0);}
+function advanceTrial(){
+    if(S.done) return;
+    S.prev=t.s;S.idx++;
+    TM=setTimeout(nextTrial,0);
+  }
   TM=setTimeout(tick,0);
 }
 function getPracFeedbackText(par){
