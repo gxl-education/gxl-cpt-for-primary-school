@@ -247,7 +247,7 @@ function getNormForChild(mo,sex){
   const allKey=`${monthAgeGroup(mo)}_all`;
   if(cache[sexKey])return{norm:cache[sexKey],label:`${monthAgeGroup(mo)}·${sex==='M'?'男':'女'}生`,fallback:false};
   if(cache[allKey])return{norm:cache[allKey],label:`${monthAgeGroup(mo)}·混合性别（同性别数据不足）`,fallback:true};
-  const global=calcNorm(loadRecs());
+  const global=calcNorm(JSON.parse(lsGet(SK)||'[]'));
   if(global)return{norm:global,label:'全样本（月龄分组数据不足）',fallback:true};
   return{norm:null,label:'常模积累中',fallback:true};
 }
@@ -548,17 +548,19 @@ function computeMetrics(resps){
   const decayFlag=segs[0]!==null&&segs[2]!==null&&(segs[2]-segs[0])>15;
   return{HR:Math.round(HR*1000)/1000,FAR:Math.round(FAR*1000)/1000,rtSD:rtSD?Math.round(rtSD):null,omR,comR,rtM:rtM?Math.round(rtM):null,dp:Math.round(dp*100)/100,persistence,segs,decayFlag,hits,miss,fa,nT:tgts.length,nNT:nTgts.length};
 }
-async function finishTest(){
+function finishTest(){
   const m=computeMetrics(S.resps);
   const{norm,label,fallback}=getNormForChild(S.mo,S.sex);
   const rec={id:S.id,grade:S.grade,sex:S.sex,mo:S.mo,ag:S.ag,par:S.par,birthY:S.birthY,birthM:S.birthM,birthD:S.birthD,HR:m.HR,FAR:m.FAR,rtSD:m.rtSD,omR:m.omR,comR:m.comR,rtM:m.rtM,dp:m.dp,date:new Date().toLocaleDateString('zh-CN'),ts:Date.now()};
-  await saveRec(rec);
   const{VAQ,VRCQ}=calcQuotients(m,norm);
   S.lastM=m;S.lastVAQ=VAQ;S.lastVRCQ=VRCQ;
   const vaqAge=calcAttentionAge(VAQ,S.sex);
   const vrcqAge=calcAttentionAge(VRCQ,S.sex);
   S.lastRec=rec;S.lastNormLabel=label;S.lastFallback=fallback;S.lastVAQAge=vaqAge;S.lastVRCQAge=vrcqAge;
   go('result-screen');
+  fetch('/api/save-record',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(rec)})
+    .then(()=>loadRecs().then(a=>recomputeNorm(a)))
+    .catch(e=>console.error('保存失败',e));
 }
 function resetAll(){
   S={};
@@ -597,7 +599,7 @@ function importCSV(inp){
   const reader=new FileReader();
   reader.onload=e=>{
     const lines=e.target.result.split('\n').slice(1).filter(l=>l.trim());
-    const existing=loadRecs();
+    const existing=JSON.parse(lsGet(SK)||'[]');
     const keys=new Set(existing.map(r=>r.id+'_'+r.date));
     const merged=[...existing];let added=0;
     lines.forEach(line=>{
