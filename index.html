@@ -557,10 +557,8 @@ function finishTest(){
   const vaqAge=calcAttentionAge(VAQ,S.sex);
   const vrcqAge=calcAttentionAge(VRCQ,S.sex);
   S.lastRec=rec;S.lastNormLabel=label;S.lastFallback=fallback;S.lastVAQAge=vaqAge;S.lastVRCQAge=vrcqAge;
+saveRec(rec);
   go('result-screen');
-  fetch('/api/save-record',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(rec)})
-    .then(()=>loadRecs().then(a=>recomputeNorm(a)))
-    .catch(e=>console.error('保存失败',e));
 }
 function resetAll(){
   S={};
